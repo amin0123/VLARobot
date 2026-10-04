@@ -72,7 +72,9 @@ def command(cfg, output, batch_size):
         "seed": cfg["seed"],
         "wandb.enable": "false",
     }
-    return [sys.executable, "-m", "lerobot.scripts.lerobot_train"] + [f"--{k}={v}" for k, v in flags.items()]
+    return [sys.executable, "-m", "src.training.official_entrypoint"] + [
+        f"--{k}={v}" for k, v in flags.items()
+    ]
 
 
 def main():

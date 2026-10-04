@@ -50,6 +50,15 @@ time, and `nvidia-smi` memory/utilization samples. W&B is disabled; no account i
 required. GPU memory includes other processes such as the desktop, whereas the
 smoke test also reports PyTorch's allocation accounting.
 
+On this pinned LeRobot release, the small `official_entrypoint.py` launcher sets
+PyTorch's CUDA autocast dtype to BF16 before calling the official trainer. The
+SmolVLA config has `use_amp` but no `dtype` field, so upstream otherwise chooses
+CUDA's FP16 default. That created a GradScaler unable to unscale the checkpoint's
+BF16 gradients in our first attempted step. BF16 autocast avoids that mismatch
+and uses the same precision as our inference smoke test. No upstream library
+files or training-loop implementation are patched. `mixed_precision: false`
+disables the upstream autocast selection.
+
 CUDA OOM triggers a bounded retry at half the batch size, ending at batch size 1.
 Retries use fresh child processes to release allocations and retain failed logs.
 They restart from the selected pretrained checkpoint; they do not claim optimizer

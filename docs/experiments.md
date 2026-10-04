@@ -133,7 +133,34 @@ These are single-example smoke-test measurements after warm-up, not an end-to-en
 control benchmark or a demonstration of task competence. Base outputs were not
 executed as evidence of success.
 
+## Training integration issue
+
+The initial sanity run reached its first backward pass and failed with
+`_amp_foreach_non_finite_check_and_unscale_cuda` unsupported for BF16 gradients.
+LeRobot 0.6.1 falls back to PyTorch's default CUDA FP16 autocast for SmolVLA when
+`use_amp=true`, creating an incompatible GradScaler for the loaded BF16 weights.
+
+Considered solutions: disable AMP; change the checkpoint's weight dtypes; select
+BF16 autocast. The selected minimal fix sets PyTorch's CUDA autocast dtype to
+BF16 in a tiny entrypoint and immediately calls the official trainer. Its source
+already uses that setting for this policy. This preserves the model, dataset,
+optimizer/training loop, and CUDA acceleration. Failed logs are retained in
+`outputs/train/sanity_amp_failure/`.
+
+## 300-step sanity fine-tune — passed
+
+The corrected official trainer completed **300 steps**, batch size **8**, without
+an OOM retry, in **43.8 s** (including model/trainer startup and checkpoint writes).
+Logged training loss decreased from **2.614** at the first logging interval to
+**0.255** at the last. Checkpoints were saved at steps 150 and 300. The local log
+contains every interval; this is a short integration/sanity experiment.
+
+Held-out flow-matching loss on 64 fixed-seed validation samples was
+**0.2164**. This is not a physical success rate. The saved
+checkpoint, processors, and training normalization loaded successfully in the
+validation application. Artifacts: `outputs/train/sanity/`.
+
 ## Outstanding runtime gates
 
-The 300-step sanity fine-tune, longer training run, and VLA rollout evaluation
-are not yet recorded here. No task success rate is asserted for them.
+Sanity closed-loop rollouts, longer fine-tuning, and the full generalization
+evaluation are not yet recorded here. No VLA task success rate is asserted yet.
