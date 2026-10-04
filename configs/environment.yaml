@@ -1,0 +1,32 @@
+physics_hz: 120
+control_hz: 10
+image_size: 256
+max_steps: 240
+cube_size: 0.04
+cube_mass: 0.06
+table_height: 0.0
+bin_inner_width: 0.105
+bin_wall_height: 0.055
+bin_wall_thickness: 0.008
+bin_floor_thickness: 0.008
+camera_position: [1.05, -0.90, 1.10]
+camera_target: [0.48, 0.0, 0.06]
+camera_focal_length: 24.0
+camera_aperture: 36.0
+dome_intensity: 900.0
+max_translation_step: 0.025
+max_rotation_step: 0.10
+workspace_low: [0.23, -0.38, 0.012]
+workspace_high: [0.76, 0.38, 0.48]
+cube_spawn_x: [0.32, 0.54]
+cube_spawn_y: [-0.24, 0.24]
+minimum_cube_distance: 0.095
+container_centers:
+  red: [0.66, -0.27]
+  green: [0.66, -0.09]
+  blue: [0.66, 0.09]
+  yellow: [0.66, 0.27]
+home_joints: [0.0, -0.45, 0.0, -2.25, 0.0, 1.80, 0.785398]
+# Relative to the Panda hand origin; validated against the physical finger pads.
+tcp_offset: 0.1034
+success_hold_steps: 8

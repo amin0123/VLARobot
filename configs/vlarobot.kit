@@ -1,0 +1,53 @@
+[package]
+title = "VLA Robot Lab"
+version = "0.1.0"
+description = "Minimal Isaac Sim application for one RGB-camera Panda manipulation scene"
+
+[dependencies]
+"isaacsim.simulation_app" = {}
+"isaacsim.core.api" = {}
+"isaacsim.core.prims" = {}
+"isaacsim.core.utils" = {}
+"isaacsim.core.experimental.prims" = {}
+"isaacsim.core.experimental.objects" = {}
+"isaacsim.robot_motion.motion_generation" = {}
+"isaacsim.sensors.experimental.rtx" = {}
+"isaacsim.storage.native" = {}
+"omni.isaac.ml_archive" = {}
+"omni.kit.loop-isaac" = {}
+"omni.kit.mainwindow" = {}
+"omni.kit.viewport.window" = {}
+"omni.kit.viewport.utility" = {}
+"omni.kit.material.library" = {}
+"omni.physx.tensors" = {}
+"omni.physics.physx" = {}
+"omni.physics.stageupdate" = {}
+"omni.hydra.rtx" = {}
+"omni.hydra.usdrt_delegate" = {}
+"omni.replicator.core" = {}
+"omni.rtx.spg" = {}
+
+[settings]
+app.name = "VLA Robot Lab"
+app.window.title = "VLA Robot Lab"
+app.settings.persistent = false
+app.vulkan = true
+app.useFabricSceneDelegate = true
+app.settings.fabricDefaultStageFrameHistoryCount = 3
+app.runLoops.main.rateLimitEnabled = false
+app.renderer.skipWhileMinimized = false
+app.renderer.sleepMsOnFocus = 0
+app.renderer.sleepMsOutOfFocus = 0
+omni.replicator.asyncRendering = false
+renderer.gpuEnumeration.glInterop.enabled = false
+rtx.spg.enabled = true
+rtx.hydra.supportMultiTickRate = true
+rtx.rendering.perSensorTickTlas = true
+rtx-transient.dlssg.enabled = false
+physics.autoPopupSimulationOutputWindow = false
+persistent.app.stage.upAxis = "Z"
+persistent.omnigraph.updateToUsd = false
+persistent.omni.replicator.captureOnPlay = false
+
+[settings.app.exts]
+registryEnabled = true

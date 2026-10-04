@@ -1,0 +1,11 @@
+repo_id: local/vlarobot_pick_place
+root: datasets/pick_place_50
+episodes: 50
+seed_start: 1000
+max_attempt_factor: 3
+split: train
+expert_gate: outputs/expert/summary.json
+minimum_expert_episodes: 100
+minimum_expert_success: 0.95
+# All 12 different-color combinations except these three are available to training.
+held_out_pairs: [[green, blue], [blue, yellow], [yellow, red]]

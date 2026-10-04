@@ -1,0 +1,9 @@
+checkpoint: outputs/train/sanity/checkpoints/last/pretrained_model
+episodes_per_condition: 20
+seed_start: 100000
+conditions: [train_replay, position, language, composition, lighting, camera, scale]
+output_dir: outputs/evaluation
+video_dir: outputs/videos
+videos_per_condition: 2
+n_action_steps: 5
+max_steps: 240

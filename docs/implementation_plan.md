@@ -103,5 +103,8 @@ flowchart LR
 
 ## Status
 
-Machine inspection complete. Dependency selection and installation in progress.
-No simulator, expert, model, or training result has been claimed yet.
+Machine inspection complete. Dependency selection found NumPy/packaging conflicts
+between current Isaac Sim 6.1.0.0 and LeRobot 0.6.1. Selected two Python 3.12 Conda
+environments (`vlarobot`, `vlarobot-sim`) and a local observation/action subprocess
+bridge. See `environment.md` for the alternatives and decision. Installation is
+in progress; no simulator, expert, model, or training result claimed yet.
