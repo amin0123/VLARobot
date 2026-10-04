@@ -14,8 +14,18 @@ large datasets, optimizer states, model weights, or videos.
 | `full_episode_start_diagnostics.json` | `outputs/action_diagnostics_full_starts.json` |
 | `pinned_model_equivalence.json` | `outputs/checks/pinned_model_equivalence.json` |
 | `smoke_test_vla_pinned.json` | `outputs/smoke_test_vla_pinned.json` |
+| `evaluation_results.csv` | `outputs/evaluation/results.csv` |
+| `evaluation_summary.json` | `outputs/evaluation/summary.json` |
+| `evaluation_report.md` | `outputs/evaluation/report.md` |
+| `evaluation_run_config.json` | `outputs/evaluation/run_config.json` |
+| `evaluation_failure_analysis.json` | `outputs/evaluation/failure_analysis.json` |
+| `evaluation_failure_analysis.md` | `outputs/evaluation/failure_analysis.md` |
+| `evaluation_artifact_integrity.json` | `outputs/evaluation/artifact_integrity.json` |
+| `gui_synchronization.json` | `outputs/checks/gui_synchronization/simulation_check.json` |
+| `gui_policy_result.json` | Result section of `outputs/videos/interactive_20261004T164634_355991Z.json` |
 
-The parent [experiment log](../experiments.md) distinguishes the scripted teacher,
+The GUI result file extracts the result section; all other JSON/CSV report copies
+are unchanged. The parent [experiment log](../experiments.md) distinguishes the scripted teacher,
 offline action diagnostics, training loss, and physical learned-policy success.
 Absolute paths inside runtime metadata describe the machine used for the run.
 The original local artifacts remain under `outputs/` and `datasets/`.

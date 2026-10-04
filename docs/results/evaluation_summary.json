@@ -1,0 +1,86 @@
+{
+  "checkpoint": "outputs/train/full/checkpoints/last/pretrained_model",
+  "conditions": {
+    "train_replay": {
+      "episodes": 20,
+      "successes": 14,
+      "success_rate": 0.7,
+      "wilson_95_low": 0.4810271816464765,
+      "wilson_95_high": 0.8545227551323956,
+      "failure_categories": {
+        "failed_grasp": 6
+      }
+    },
+    "position": {
+      "episodes": 20,
+      "successes": 0,
+      "success_rate": 0.0,
+      "wilson_95_low": 0.0,
+      "wilson_95_high": 0.16112515805281938,
+      "failure_categories": {
+        "failed_to_approach_target": 15,
+        "failed_grasp": 2,
+        "selected_wrong_object": 3
+      }
+    },
+    "language": {
+      "episodes": 20,
+      "successes": 0,
+      "success_rate": 0.0,
+      "wilson_95_low": 0.0,
+      "wilson_95_high": 0.16112515805281938,
+      "failure_categories": {
+        "failed_grasp": 1,
+        "failed_to_approach_target": 16,
+        "selected_wrong_object": 3
+      }
+    },
+    "composition": {
+      "episodes": 20,
+      "successes": 1,
+      "success_rate": 0.05,
+      "wilson_95_low": 0.008881448800795402,
+      "wilson_95_high": 0.23613119344674205,
+      "failure_categories": {
+        "failed_to_approach_target": 17,
+        "failed_grasp": 2
+      }
+    },
+    "lighting": {
+      "episodes": 20,
+      "successes": 0,
+      "success_rate": 0.0,
+      "wilson_95_low": 0.0,
+      "wilson_95_high": 0.16112515805281938,
+      "failure_categories": {
+        "failed_to_approach_target": 16,
+        "selected_wrong_object": 3,
+        "failed_grasp": 1
+      }
+    },
+    "camera": {
+      "episodes": 20,
+      "successes": 0,
+      "success_rate": 0.0,
+      "wilson_95_low": 0.0,
+      "wilson_95_high": 0.16112515805281938,
+      "failure_categories": {
+        "failed_grasp": 2,
+        "failed_to_approach_target": 16,
+        "selected_wrong_object": 2
+      }
+    },
+    "scale": {
+      "episodes": 20,
+      "successes": 0,
+      "success_rate": 0.0,
+      "wilson_95_low": 0.0,
+      "wilson_95_high": 0.16112515805281938,
+      "failure_categories": {
+        "failed_to_approach_target": 16,
+        "selected_wrong_object": 3,
+        "failed_grasp": 1
+      }
+    }
+  }
+}

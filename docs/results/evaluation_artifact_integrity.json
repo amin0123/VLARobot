@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "episodes": 140,
+  "conditions": {
+    "train_replay": 20,
+    "position": 20,
+    "language": 20,
+    "composition": 20,
+    "lighting": 20,
+    "camera": 20,
+    "scale": 20
+  },
+  "retained_videos": 15,
+  "checks": [
+    "unique condition/episode IDs",
+    "complete finite 7D actions and synchronized trace lengths",
+    "matching task/initial-state metadata",
+    "fresh test seed range",
+    "video frame counts",
+    "unchanged model SHA-256",
+    "matching environment/controller fingerprint"
+  ]
+}

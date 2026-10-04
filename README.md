@@ -5,15 +5,17 @@ Hugging Face LeRobot, and pretrained SmolVLA**. Follow the pipeline from physica
 expert demonstrations to a LeRobot dataset, fine-tuning, closed-loop robot control,
 and honest generalization evaluation.
 
-**Current validation status:** the existing Isaac Sim scene and synchronized RGB
-capture pass runtime checks; the scripted expert achieved **100/100** randomized
-successes. The real dataset contains **50 demonstrations / 3,914 frames**, with
-45/5 train/validation episodes. Three replays have been visually reviewed.
-Pretrained CUDA inference and 300-step/3,000-step/20,000-step fine-tuning runs passed. The
-corrected 3,000-step model completed **one of six development trials**; the successful trial
-used a previously unseen scene. Earlier baselines failed all pilot tasks. A
-140-episode fresh-seed evaluation is running. See
-[the experiment log](docs/experiments.md); expert success is separate from VLA success.
+**Executed end to end:** the existing Isaac Sim scene and synchronized RGB capture
+pass runtime checks; the scripted expert achieved **100/100** randomized successes.
+The real dataset contains **50 demonstrations / 3,914 frames**, with 45/5
+train/validation episodes and reviewed replays. Pretrained CUDA inference, sanity
+training, a **20,000-step fine-tune**, and **140 physical policy evaluations** ran.
+
+**The learned policy remains unreliable on new scenes:** it succeeded in 14/20
+training-scene replays and 1/20 held-out color combinations, but 0/20 in each other
+generalization condition. This repository teaches the complete pipeline and its
+measured limitations. See [the experiment log](docs/experiments.md); scripted
+expert success is separate from learned VLA success.
 
 ```mermaid
 flowchart LR
@@ -176,7 +178,16 @@ actions, executes the first five, and then uses fresh observations. It does not
 blindly execute one fixed episode trajectory. Videos and action/telemetry traces
 are saved under `outputs/videos/`.
 
-To run the configuration of the first successful learned development trial:
+To run the configuration of the full model's successful held-out combination:
+
+```bash
+python -m src.inference.run_policy --headless --seed 300005 \
+  --instruction "Take the yellow cube to the red box."
+```
+
+The actual recording is `outputs/videos/evaluation/composition_0005.mp4`;
+its [contact sheet](docs/media/vla_full_composition_success.jpg) shows the grasp,
+transport, release, and retreat. To inspect the earlier 3,000-step success:
 
 ```bash
 python -m src.inference.run_policy --headless --seed 100000 \
@@ -189,7 +200,9 @@ and [failed VLA contact sheet](docs/media/vla_3000step_failure.jpg) show actual
 simulator frames. One success does not establish a reliable policy.
 Seeds fix the scene layout and model sampling, but RTX rendering is not guaranteed
 pixel-identical across runs or GUI/headless modes. A GUI trial with the same seed
-failed; the result is retained in the experiment log.
+failed; the result is retained in the experiment log. The full model's GUI trial
+on the yellow → red example also failed its grasp. Native-viewer synchronization
+passed; the recorded headless successes do not guarantee repeatable task success.
 
 ## Evaluate and analyze failures
 
@@ -216,21 +229,35 @@ See [inference/evaluation](docs/inference.md) and
 [actual experiment results](docs/experiments.md). Bad outcomes remain in reports.
 No learned success rate has been asserted before completing the corresponding run.
 
-Measured development baselines so far (three episodes per condition are a small
-debugging sample, with a 0%–56.1% Wilson interval for each zero-success result):
+Generated datasets, weights, and videos stay in ignored local folders. Compact
+measurements and actual contact sheets are versioned under `docs/results/` and
+`docs/media/` so the experiment record remains part of the repository.
 
-| Model | Training-scene replay | Unseen development positions |
-|---|---:|---:|
-| SmolVLA, 300 steps, batch 8, image 256 | 0/3 | 0/3 |
-| SmolVLA, 3,000 steps, batch 32, image 256 | 0/3 | 0/3 |
-| SmolVLA, 3,000 steps, batch 32, image 512 | 0/3 | 0/3 |
-| SmolVLA, 3,000 steps, FP32 storage and corrected reload | 0/3 | 1/3 |
+Measured final results: 20 trials per condition, 20,000-step checkpoint, five
+executed actions per chunk, and a 240-step episode limit.
 
-The 1/3 position result has a 6.1%–79.2% Wilson interval. All pilots use the same
-scene/noise seeds; full test results are reported separately.
+| Experiment | Successes | Success rate | Wilson 95% CI |
+|---|---:|---:|---:|
+| Training-scene replay | 14/20 | 70% | 48.1%–85.5% |
+| Unseen positions, recorded wording | 0/20 | 0% | 0%–16.1% |
+| Held-out paraphrases | 0/20 | 0% | 0%–16.1% |
+| Held-out color combinations | 1/20 | 5% | 0.9%–23.6% |
+| Lighting variation | 0/20 | 0% | 0%–16.1% |
+| Camera perturbation | 0/20 | 0% | 0%–16.1% |
+| Cube scale variation | 0/20 | 0% | 0%–16.1% |
 
-The final test uses fresh scene seeds beginning at 300000. Development pilot
-seeds beginning at 100000 are retained for paired comparisons during debugging.
+![Measured closed-loop results](docs/media/evaluation.png)
+
+Test conditions use paired fresh scene seeds 300000–300019; training replay is
+a separate memorization diagnostic. A 0/20 result does not prove zero underlying
+success probability. Because the position baseline is already zero, the other
+zero rows cannot establish how much a wording or visual change hurts performance.
+The earlier development pilots and failed attempts remain in the experiment log.
+
+Across 140 trials, the outcome heuristics recorded 96 approach failures, 15 failed
+grasps, and 14 wrong-object lifts. All 140 traces and 15 representative videos
+were retained. The primary limitation is initial object approach on new scenes;
+the data contains only four to six demonstrations per canonical pair.
 
 ## Troubleshooting
 
@@ -258,6 +285,7 @@ python -m ruff check src scripts tests
 These tests cover contracts and the real LeRobot writer API. The tiny synthetic
 writer fixture is temporary test data, never a substitute for physical robot
 demonstrations. Physics/expert/model/training checks are separate runtime milestones.
+The final software/API suite has 15 passing tests.
 
 ## Limitations and next steps
 

@@ -1,0 +1,99 @@
+{
+  "checkpoint": "outputs/train/full/checkpoints/last/pretrained_model",
+  "checkpoint_sha256": "777b70b04956450efa168187d63bb57faeb6805583df08700cdf424a590c20e6",
+  "training_root": "/home/amin24/orca/VLARobot/datasets/splits/train",
+  "instruction_sampling": "seen",
+  "protocol_version": 2,
+  "conditions": [
+    "train_replay",
+    "position",
+    "language",
+    "composition",
+    "lighting",
+    "camera",
+    "scale"
+  ],
+  "episodes_per_condition": 20,
+  "seed_start": 300000,
+  "n_action_steps": 5,
+  "max_steps": 240,
+  "videos_per_condition": 2,
+  "environment": {
+    "physics_hz": 120,
+    "control_hz": 10,
+    "image_size": 256,
+    "max_steps": 240,
+    "cube_size": 0.04,
+    "cube_mass": 0.06,
+    "table_height": 0.0,
+    "bin_inner_width": 0.105,
+    "bin_wall_height": 0.055,
+    "bin_wall_thickness": 0.008,
+    "bin_floor_thickness": 0.008,
+    "camera_position": [
+      0.9,
+      -0.6,
+      0.9
+    ],
+    "camera_target": [
+      0.48,
+      0.0,
+      0.1
+    ],
+    "camera_focal_length": 35.0,
+    "camera_aperture": 36.0,
+    "dome_intensity": 900.0,
+    "max_translation_step": 0.025,
+    "max_rotation_step": 0.1,
+    "workspace_low": [
+      0.23,
+      -0.38,
+      0.012
+    ],
+    "workspace_high": [
+      0.76,
+      0.38,
+      0.48
+    ],
+    "cube_spawn_x": [
+      0.32,
+      0.54
+    ],
+    "cube_spawn_y": [
+      -0.24,
+      0.24
+    ],
+    "minimum_cube_distance": 0.095,
+    "container_centers": {
+      "red": [
+        0.66,
+        -0.27
+      ],
+      "green": [
+        0.66,
+        -0.09
+      ],
+      "blue": [
+        0.66,
+        0.09
+      ],
+      "yellow": [
+        0.66,
+        0.27
+      ]
+    },
+    "home_joints": [
+      0.0,
+      -0.45,
+      0.0,
+      -2.25,
+      0.0,
+      1.8,
+      0.785398
+    ],
+    "tcp_offset": 0.1034,
+    "success_hold_steps": 8
+  },
+  "environment_controller_fingerprint": "c7debd92059a49543db65df7e22e866f324dc4c3a620093e3c0b78fcf359462e",
+  "initial_configuration_note": "Results contain settled object poses. Camera/light/scale perturbations are reproduced from each recorded seed and condition using the environment configuration here."
+}

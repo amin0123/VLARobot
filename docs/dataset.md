@@ -121,5 +121,14 @@ language/task balance and episode videos before increasing training time. Fifty
 episodes spread over nine tasks and five phrases are a deliberately small
 baseline, not a large multi-task dataset.
 
+In the actual 45-episode training split, all 31 collected sentences remain
+represented: **20 sentences have one demonstration, eight have two, and three
+have three**. Each canonical pair has four to six demonstrations. This sparse
+coverage can permit associations between a sentence and particular scene layouts;
+it does not force reliable localization or source/destination binding. That is a
+possible shortcut to investigate, not a proved internal explanation of the
+model's failures. Increasing repetitions across positions for each canonical
+pair and balancing wording are useful next controlled experiments.
+
 Reference: [LeRobotDataset v3](https://huggingface.co/docs/lerobot/lerobot-dataset-v3)
 and the pinned `lerobot.datasets.dataset_tools.split_dataset` source.

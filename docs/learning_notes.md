@@ -359,6 +359,18 @@ However, compositional generalization is an empirical question. Enough examples
 of the ingredients do not guarantee the model learns the desired factorization.
 Report separate position, language, and composition results with uncertainty.
 
+Our full model provides a concrete, limited example: on fresh scene seed 300005,
+“Take the yellow cube to the red box” succeeded in 69 steps. Yellow → red is one
+of the three pairings excluded from demonstration collection. The model received
+only the same RGB/state/text interface throughout the rollout.
+
+![Actual held-out yellow-to-red combination, 20,000-step model](media/vla_full_composition_success.jpg)
+
+The complete composition condition achieved **1/20**, with a Wilson 95% interval
+of **0.9%–23.6%**. This establishes an observed successful combination and poor
+overall reliability on that test distribution. It does not establish systematic
+compositional reasoning; the other 19 failures are part of the same result.
+
 ## Why can it fail on apparently simple tasks?
 
 A grasp requires small spatial errors, good timing, correct opening, and sustained

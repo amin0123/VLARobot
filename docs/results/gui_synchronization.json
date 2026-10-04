@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "gui": true,
+  "image_shape": [
+    256,
+    256,
+    3
+  ],
+  "state_shape": [
+    14
+  ],
+  "capture_state_drift": 0.0,
+  "render_vs_no_render_max_state_error": 0.0,
+  "image_mean_absolute_change": 5.909779866536458,
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/FrankaRobotics/FrankaPanda/franka.usd"
+}

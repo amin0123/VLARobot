@@ -396,8 +396,7 @@ bit-identical. Camera perturbation produced a much larger difference (about 11.1
 These image differences are diagnostics, not proof of the cause of any policy
 failure. All actual initial/final images remain under `outputs/checks/`.
 
-The final 140-episode generalization evaluation is running; results will be added
-only after the physical rollouts complete.
+The final 140-episode generalization evaluation completed; its results are below.
 
 `setup.sh` was re-run successfully after switching to the tested package lock.
 It reused the existing simulator, passed dependency/CUDA checks, and did not
@@ -428,8 +427,8 @@ download script fixed that API mismatch.
 With `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`, the final model reproduced
 five previously measured actions **exactly**, with maximum absolute difference
 **0.0**. This changes asset resolution, not trained weights or policy behavior.
-Evidence: `outputs/checks/pinned_model_equivalence.json`. The running physical
-evaluation uses the same revision and unchanged weights.
+Evidence: `outputs/checks/pinned_model_equivalence.json`. The physical evaluation
+used the same revision and unchanged weights.
 
 A separate **two-step, batch-2 compatibility check** completed using the official
 trainer with offline asset loading. Resuming its saved optimizer/data order ran
@@ -442,3 +441,110 @@ a finite `[1, 50, 7]` chunk and using 1,188.9 MiB peak PyTorch allocation. Its w
 latency was 94.8 ms while evaluation shared the GPU, so that timing is not an
 isolated speed benchmark. All 15 software/API tests and Ruff checks passed after
 the asset-pinning changes.
+
+## Final closed-loop evaluation — 140 trials completed
+
+The frozen **20,000-step** checkpoint completed **20 trials in each of seven
+conditions**, using five actions from each 50-action prediction and a 240-step
+limit. New-scene conditions used seeds **300000–300019**; training replay used
+20 actual training episodes. The checkpoint hash, environment/controller
+fingerprint, exact instructions, initial configurations, and protocol version
+are recorded with the results. The model was not tuned on these test seeds.
+
+| Condition | Successes / trials | Success rate | Wilson 95% CI |
+|---|---:|---:|---:|
+| Training-scene replay | 14/20 | 70% | 48.1%–85.5% |
+| Unseen positions, recorded wording | 0/20 | 0% | 0%–16.1% |
+| Held-out paraphrases | 0/20 | 0% | 0%–16.1% |
+| Held-out color combinations | 1/20 | 5% | 0.9%–23.6% |
+| Lighting variation | 0/20 | 0% | 0%–16.1% |
+| Camera perturbation | 0/20 | 0% | 0%–16.1% |
+| Cube scale variation | 0/20 | 0% | 0%–16.1% |
+
+![Actual full-model evaluation with uncertainty](media/evaluation.png)
+
+The single composition success was **yellow → red**, instruction **“Take the
+yellow cube to the red box.”**, seed **300005**, in **69 steps / 6.9 simulated
+seconds**. Its actual video was decoded and visually reviewed: physical closure,
+lift, transport, release inside the red box, and retreat are visible. Yellow →
+red is absent from the demonstration set. This is one successful held-out
+combination, not evidence of reliable compositional reasoning.
+
+![Actual held-out combination success](media/vla_full_composition_success.jpg)
+
+### What failed
+
+Across the 140 trials, 125 failed. Observable outcome labels were:
+
+| Failure label | Trials |
+|---|---:|
+| Failed to approach the target | 96 |
+| Failed grasp / no sustained target lift | 15 |
+| Lifted a wrong object | 14 |
+
+The six training-replay failures were all labeled failed grasps. Most new-scene
+failures occurred before a target grasp. Mean initial XY target error was
+**2.73 cm** on live training replays, **16.57 cm** on unseen positions, **16.01 cm**
+with held-out wording, **15.29 cm** for held-out combinations, **16.75 cm** under
+lighting changes, **16.66 cm** under camera changes, and **16.37 cm** under scale
+changes. These are comparisons to the teacher's initial approach target, computed
+after the rollout using evaluator-only object poses. They are not policy inputs
+or a second controller.
+
+The earlier replay example shows a missed grasp followed by empty transport to
+the intended container. Another replay succeeded after lifting the red cube
+21.3 cm. See the actual frames and measured actions in `learning_notes.md`.
+The outcome classifier does not establish whether a failure arose from language
+misunderstanding, visual localization, oscillation, contact, or an action bias.
+Those causal labels are not fabricated from an endpoint score.
+
+### Interpretation and limits
+
+The large gap between training replay and new positions, together with rising
+held-out flow loss, is consistent with overfitting and weak scene generalization.
+The 45 training episodes provide only four to six demonstrations per canonical
+pair, and 20 of the 31 exact sentences occur once. Memorizing associations between
+particular sentences/images and positions is a plausible shortcut. The experiment
+does not prove the network's internal strategy.
+
+The zero position baseline creates a floor effect: further zero scores under
+wording, light, camera, or scale changes do not demonstrate invariance to those
+changes. Composition also has a different source-color mixture. Twenty trials
+give broad uncertainty; conditions share scene seeds and must not be pooled as
+140 independent unseen scenes. A future comparison should add balanced data,
+test tighter camera framing or higher actual capture resolution, and use fresh
+test seeds. These are proposed experiments, not claimed improvements.
+
+All 140 trials have finite seven-dimensional actions and complete synchronized
+traces. An integrity audit verified episode IDs, metadata, test seeds, video
+frame counts, the unchanged checkpoint SHA-256, and the environment fingerprint.
+**15 representative videos** were retained, including successes and failures.
+Brief verification processes shared the GPU during parts of this run, so its
+wall-clock timings should not be used as an isolated throughput benchmark.
+
+Primary local artifacts are `outputs/evaluation/results.csv`, `summary.json`,
+`run_config.json`, `failure_analysis.json`, `artifact_integrity.json`, and
+`traces/`. Videos are under `outputs/videos/evaluation/`. Exact compact copies
+are versioned under [results/](results/README.md).
+
+## Final viewer checks
+
+The native GUI synchronization check passed: extra capture caused **0.0** state
+drift, and the same 12 actions with versus without rendering produced **0.0**
+maximum state difference. Its real RGB frames/report are under
+`outputs/checks/gui_synchronization/`. This verifies the GUI physics/capture path
+as well as the earlier headless check.
+
+The final model was then run in the native viewer with seed 300005 and the same
+yellow → red instruction as the successful headless trial. This GUI trial
+**failed its grasp within 240 steps**. The unique recording and full trace are
+`outputs/videos/interactive_20261004T164634_355991Z.mp4` and its companion JSON.
+It is a separate interface/repeatability check, not an extra success or failure
+silently added to the fixed evaluation suite. Rendering is not pixel-identical
+across modes; the exact cause of the changed outcome is not established.
+
+The terminal jogger executed raise, close, and open commands against the real
+simulator; measured opening changed from 0.080 to 0.039 to 0.070 m. The recorded
+held-out success also played through `ffplay` and exited normally. Thus the
+viewer, jogger, video export/playback, and learned inference paths executed,
+while policy reliability remains the measured limitation above.

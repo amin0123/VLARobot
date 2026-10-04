@@ -124,8 +124,8 @@ See `environment.md` for the decision and `experiments.md` for executed mileston
 | SmolVLA smoke test | CUDA output [1, 50, 7], 78.9 ms warm inference |
 | Sanity fine-tune | 300 official trainer steps; checkpoints and validation loss recorded |
 | Full fine-tune | 20,000 steps/batch 32 completed in 43.1 minutes; checkpoints and held-out loss saved |
-| Closed-loop VLA | First physical learned success in the corrected FP32 pilot; failures and GUI failure retained |
-| Generalization suite | All visual scene resets verified; 140-episode full evaluation running |
-| Educational documentation | Pipeline guides and actual success/failure frames written; final test results pending |
+| Closed-loop VLA | Direct RGB/text/state control produced physical successes; failures retained |
+| Generalization suite | 140 completed trials: 14/20 training replay, 1/20 held-out combinations, 0/20 in each other condition |
+| Educational documentation | Complete pipeline guides, measured tables, uncertainty, failure analysis, and actual success/failure frames |
 
 Exact measurements, failed attempts, and artifact paths are in `experiments.md`.
