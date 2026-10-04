@@ -26,14 +26,16 @@ class ScriptedExpert:
             self.grasp_position = cube.copy()
         grasp = self.grasp_position
         floor = self.cfg["table_height"] + self.cfg["bin_floor_thickness"]
+        # Release just above the rim so the open fingers cannot hit the walls.
+        release_height = floor + self.cfg["bin_wall_height"] + self.cfg["cube_size"] / 2 + 0.025
         targets = [
             np.array([*grasp[:2], 0.22]),
             np.array([*grasp[:2], grasp[2]]),
             np.array([*grasp[:2], grasp[2]]),
             np.array([*grasp[:2], 0.24]),
             np.array([*destination, 0.24]),
-            np.array([*destination, floor + self.cfg["cube_size"] / 2 + 0.006]),
-            np.array([*destination, floor + self.cfg["cube_size"] / 2 + 0.006]),
+            np.array([*destination, release_height]),
+            np.array([*destination, release_height]),
             np.array([*destination, 0.25]),
             np.array([*destination, 0.25]),
         ]
@@ -42,7 +44,9 @@ class ScriptedExpert:
         gripper = 0.0 if 2 <= phase <= 5 else 1.0
         action = np.array([*goal, np.pi, 0, 0, gripper], dtype=np.float32)
         self.ticks += 1
-        close = np.linalg.norm(tcp - goal) < (0.006 if phase in (1, 5) else 0.012)
+        # The physical PD drives have a few millimeters of gravity-dependent
+        # tracking error. This tolerance is inside the finger-pad grasp region.
+        close = np.linalg.norm(tcp - goal) < (0.010 if phase == 1 else 0.015)
         # Contact means closed fingers cannot reach zero; phase timing must not wait for zero.
         minimum = {0: 4, 1: 3, 2: 8, 3: 4, 4: 4, 5: 4, 6: 6, 7: 5, 8: 10}[phase]
         ready = self.ticks >= minimum and (close or phase in (2, 6, 8))

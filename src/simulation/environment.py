@@ -157,10 +157,12 @@ class PickPlaceEnvironment:
         return self.observe(render=False, include_image=render), self.info()
 
     def _render(self):
-        # Synchronous rendering; repeated render-only ticks let RTX finish without
-        # advancing physics. This is also used after resets to invalidate old RGB.
-        for _ in range(2):
-            self.world.render()
+        import omni.replicator.core as rep
+
+        # Explicit synchronous capture is required by this build's sensor pipeline.
+        # A zero time delta captures the current physics state without advancing it.
+        self.world.render()
+        rep.orchestrator.step(rt_subframes=1, delta_time=0.0, pause_timeline=False)
 
     def observe(self, render=False, include_image=True):
         if render:

@@ -5,10 +5,11 @@ Hugging Face LeRobot, and pretrained SmolVLA**. Follow the pipeline from physica
 expert demonstrations to a LeRobot dataset, fine-tuning, closed-loop robot control,
 and honest generalization evaluation.
 
-**Current validation status:** dependency/CUDA checks and eight software/API tests
-pass. Physics, expert, data collection, and learned rollout milestones are being
-validated incrementally. See [the experiment log](docs/experiments.md) for measured
-results; unrun experiments are not assigned success rates.
+**Current validation status:** the existing Isaac Sim scene and synchronized RGB
+capture pass runtime checks; the scripted expert achieved **100/100** randomized
+successes. Eight software/API tests pass. Dataset and learned-policy milestones
+are being validated next. See [the experiment log](docs/experiments.md) for measured
+results; expert success is separate from VLA success.
 
 ```mermaid
 flowchart LR

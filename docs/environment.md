@@ -37,7 +37,9 @@ Inspected 2026-10-04, before installation.
 
 `pip check` passed in `vlarobot`. Loading the complete pretrained SmolVLA weights
 on CPU passed (450,046,176 parameters); this is distinct from the later real-image
-CUDA forward-pass milestone. Exact runtime tests are tracked in `experiments.md`.
+CUDA forward-pass milestone. Exact runtime tests are tracked in `experiments.md`. Isaac Sim scene rendering,
+physics/observation synchronization, and 100 randomized expert episodes have
+now passed using the existing standalone runtime.
 
 ## Reusing the existing simulator
 

@@ -48,7 +48,9 @@ class RGBCamera:
         transform = UsdGeom.Xformable(prim)
         transform.ClearXformOpOrder()
         transform.AddTranslateOp().Set(Gf.Vec3d(*p))
-        transform.AddOrientOp().Set(Gf.Quatf(float(q[0]), Gf.Vec3f(*q[1:])))
+        transform.AddOrientOp(precision=UsdGeom.XformOp.PrecisionDouble).Set(
+            Gf.Quatd(float(q[0]), Gf.Vec3d(*q[1:]))
+        )
 
     def read(self):
         data, _ = self.sensor.get_data("rgb")

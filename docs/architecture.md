@@ -91,7 +91,8 @@ targets, but it still depends on TCP definition, joint limits, and gripper geome
 - Inference advances simulation in fixed control intervals. Physics pauses while
   the neural network computes. Simulation frequency is not wall-clock inference
   throughput; logs report both.
-- RGB is rendered synchronously at the current physics state. A recorded pair
+- RGB is rendered using Replicator synchronous capture with `delta_time=0.0`
+  at the current physics state. A recorded pair
   `(observation_t, action_t)` is captured before executing that action. Outcome
   fields describe the transition to `t+1`.
 

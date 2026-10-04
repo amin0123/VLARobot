@@ -82,6 +82,7 @@ def main():
     rows = []
     with SimulationClient(gui=args.gui, log_path=output / "simulation.log") as sim:
         for condition in conditions:
+            retained_outcomes = set()
             for episode in range(episodes):
                 seed = cfg["seed_start"] + episode  # paired scene seeds across perturbation conditions
                 task = sample_task(episode, seed, condition)
@@ -91,7 +92,9 @@ def main():
                     task = Task(
                         **{key: meta[key] for key in ("source", "destination", "instruction", "template_id")}
                     )
-                video = video_dir / f"{condition}_{episode:04d}.mp4" if episode < videos else None
+                # Capture candidates so the first success and first failure can
+                # be retained even when they occur after the initial examples.
+                video = video_dir / f"{condition}_{episode:04d}.mp4" if videos else None
                 row, trace = rollout(
                     sim,
                     policy,
@@ -102,6 +105,12 @@ def main():
                     video_path=video,
                     episode=episode,
                 )
+                if video:
+                    if episode >= videos and row["success"] in retained_outcomes:
+                        video.unlink()
+                        row["video"] = ""
+                    else:
+                        retained_outcomes.add(row["success"])
                 rows.append(row)
                 write_json(output / "traces" / f"{condition}_{episode:04d}.json", trace)
                 save_results(output, rows, checkpoint)
