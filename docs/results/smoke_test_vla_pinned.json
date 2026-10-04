@@ -1,0 +1,50 @@
+{
+  "checkpoint": "checkpoints/smolvla_base",
+  "backbone_revision": "7b375e1b73b11138ff12fe22c8f2822d8fe03467",
+  "model_image_size": 256,
+  "restored_precision_values": 0,
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "input_shapes": {
+    "observation.images.camera1": [
+      1,
+      3,
+      256,
+      256
+    ],
+    "observation.state": [
+      1,
+      14
+    ],
+    "observation.language.tokens": [
+      1,
+      48
+    ],
+    "observation.language.attention_mask": [
+      1,
+      48
+    ]
+  },
+  "output_shape": [
+    1,
+    50,
+    7
+  ],
+  "action_after_denormalization": [
+    [
+      0.4669487476348877,
+      0.0037508737295866013,
+      0.3391251564025879,
+      3.1449499130249023,
+      0.0,
+      0.0,
+      0.4462432861328125
+    ]
+  ],
+  "warm_inference_latency_s": 0.09478031700018619,
+  "peak_allocated_vram_mib": 1188.87890625,
+  "allocated_vram_mib": 1163.7724609375,
+  "parameters": 450046176,
+  "trainable_parameters": 99880992,
+  "note": "Base checkpoint smoke test; these actions are not evidence of Panda task competence."
+}

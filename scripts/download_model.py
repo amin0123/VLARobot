@@ -1,14 +1,18 @@
 """Fetch the exact official base checkpoint used by this project."""
 
 import json
+import sys
 from pathlib import Path
 
 from huggingface_hub import snapshot_download
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from src.training.model_assets import BACKBONE, BACKBONE_REVISION
+
 REPO = "lerobot/smolvla_base"
 REVISION = "d9f33c94a60fb382c90dea2164c96845bd955e28"
-BACKBONE = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"
-BACKBONE_REVISION = "7b375e1b73b11138ff12fe22c8f2822d8fe03467"
 
 
 def main():

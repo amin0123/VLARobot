@@ -414,3 +414,31 @@ synthetic API fixture; four incompatible-provenance regression cases also passed
 An actual CLI attempt to append to the earlier 50-episode dataset was correctly
 rejected across the controller revision, with all metadata hashes unchanged.
 No additional data was added to the training or validation split.
+
+## Pinning runtime model assets
+
+The downloaded backbone configuration/tokenizer revision already matched the
+Hub's cached `main` reference during training, but the loaders still named that
+mutable reference. They now resolve the exact cached revision for both model
+construction and tokenization. An initial offline lookup requested the entire
+backbone snapshot and correctly failed because its separate weights were not
+downloaded; restricting lookup to the same JSON/text metadata files as the
+download script fixed that API mismatch.
+
+With `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`, the final model reproduced
+five previously measured actions **exactly**, with maximum absolute difference
+**0.0**. This changes asset resolution, not trained weights or policy behavior.
+Evidence: `outputs/checks/pinned_model_equivalence.json`. The running physical
+evaluation uses the same revision and unchanged weights.
+
+A separate **two-step, batch-2 compatibility check** completed using the official
+trainer with offline asset loading. Resuming its saved optimizer/data order ran
+exactly one further step, from step 2 to step 3, and saved a new checkpoint. These
+checks under `outputs/train/pinned_asset*` are API verification, not new task
+learning experiments or replacements for the 20,000-step model.
+
+The pretrained CUDA smoke test also passed with offline asset loading, producing
+a finite `[1, 50, 7]` chunk and using 1,188.9 MiB peak PyTorch allocation. Its warm
+latency was 94.8 ms while evaluation shared the GPU, so that timing is not an
+isolated speed benchmark. All 15 software/API tests and Ruff checks passed after
+the asset-pinning changes.

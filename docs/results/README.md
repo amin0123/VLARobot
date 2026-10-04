@@ -12,6 +12,8 @@ large datasets, optimizer states, model weights, or videos.
 | `full_training_loss.json` | `outputs/train/full/losses_00.json` |
 | `full_validation.json` | `outputs/train/full/validation.json` |
 | `full_episode_start_diagnostics.json` | `outputs/action_diagnostics_full_starts.json` |
+| `pinned_model_equivalence.json` | `outputs/checks/pinned_model_equivalence.json` |
+| `smoke_test_vla_pinned.json` | `outputs/smoke_test_vla_pinned.json` |
 
 The parent [experiment log](../experiments.md) distinguishes the scripted teacher,
 offline action diagnostics, training loss, and physical learned-policy success.

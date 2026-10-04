@@ -9,6 +9,7 @@ import os
 
 import torch
 
+from src.training.model_assets import pin_backbone, pinned_processor_overrides
 from src.training.precision import promote_trainable_parameters, restore_checkpoint_precision
 
 
@@ -17,9 +18,11 @@ def main():
     from lerobot.scripts import lerobot_train
 
     factory = lerobot_train.make_policy
+    processor_factory = lerobot_train.make_pre_post_processors
 
-    def make_policy_with_precision(*args, **kwargs):
-        policy = factory(*args, **kwargs)
+    def make_policy_with_precision(cfg, **kwargs):
+        pin_backbone(cfg)
+        policy = factory(cfg=cfg, **kwargs)
         if policy.config.pretrained_path:
             restored = restore_checkpoint_precision(policy, policy.config.pretrained_path)
             print(f"Restored saved storage precision for {restored:,} parameter values.", flush=True)
@@ -28,9 +31,16 @@ def main():
             print(f"Promoted {promoted:,} trainable parameter values to FP32 storage.", flush=True)
         return policy
 
+    def make_pinned_processors(policy_cfg, **kwargs):
+        kwargs["preprocessor_overrides"] = pinned_processor_overrides(
+            policy_cfg, kwargs.get("preprocessor_overrides")
+        )
+        return processor_factory(policy_cfg=policy_cfg, **kwargs)
+
     # This process-local construction hook runs before upstream creates the
     # optimizer. Batches, updates, saves, and scheduling stay upstream.
     lerobot_train.make_policy = make_policy_with_precision
+    lerobot_train.make_pre_post_processors = make_pinned_processors
 
     print(
         "VLA trainer: CUDA autocast dtype is bfloat16; using the official LeRobot training loop.", flush=True

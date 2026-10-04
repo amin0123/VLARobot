@@ -6,6 +6,7 @@ import numpy as np
 import torch
 
 from src.common import IMAGE_KEY
+from src.training.model_assets import pin_backbone, pinned_processor_overrides
 from src.training.precision import restore_checkpoint_precision
 
 
@@ -34,6 +35,7 @@ class VLAPolicy:
             raise RuntimeError("CUDA requested but unavailable")
         cfg = SmolVLAConfig.from_pretrained(checkpoint)
         cfg.device, cfg.n_action_steps, cfg.load_vlm_weights = device, n_action_steps, False
+        pin_backbone(cfg)
         cfg.push_to_hub = False
         if not 1 <= n_action_steps <= cfg.chunk_size:
             raise ValueError("n_action_steps must be between 1 and the checkpoint chunk_size")
@@ -48,7 +50,7 @@ class VLAPolicy:
         self.pre, self.post = make_pre_post_processors(
             cfg,
             pretrained_path=str(checkpoint),
-            preprocessor_overrides={"device_processor": {"device": device}},
+            preprocessor_overrides=pinned_processor_overrides(cfg, {"device_processor": {"device": device}}),
         )
         self.device, self.last_latency_s = device, 0.0
         self.calls = 0

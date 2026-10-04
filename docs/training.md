@@ -102,9 +102,23 @@ After the sanity run passes and its videos have been assessed:
 
 This is a larger local experiment, not equivalent to the upstream 20k-step
 reference recipe. Record actual steps, batch size, data, duration, and results.
-Use the official trainer's saved `train_config.json` and `--resume=true` to resume
-optimizer state; selecting a model through this wrapper's `--checkpoint` begins
-a new fine-tune with a fresh optimizer. Keep these two operations distinct.
+Use the saved `train_config.json` and `--resume=true` through the project's
+compatibility entrypoint to resume the official optimizer/scheduler and data
+order. For example, resume the interrupted portion of a full run in a new output
+directory:
+
+```bash
+python -m src.training.official_entrypoint \
+  --config_path=outputs/train/full/checkpoints/015000/pretrained_model/train_config.json \
+  --resume=true --output_dir=outputs/train/resumed_from_15000
+```
+
+This retains the BF16 autocast, FP32 checkpoint restoration, and pinned tokenizer
+setup. Selecting a model through `train.sh --checkpoint` instead begins a new
+fine-tune with a fresh optimizer. Increasing the total step limit while resuming
+keeps the saved scheduler state; it does not create a fresh learning-rate schedule.
+The wrapper's batch-halving retry applies to fresh fine-tunes, not this direct
+optimizer-resume command.
 
 The completed full experiment uses FP32 trainable parameter storage, BF16
 computation, 20,000 steps, batch 32, 1,000 warm-up steps, and checkpoints every

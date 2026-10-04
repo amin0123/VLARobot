@@ -1,0 +1,29 @@
+{
+  "checkpoint": "outputs/train/full/checkpoints/last/pretrained_model",
+  "backbone_config_path": "/home/amin24/.cache/huggingface/hub/models--HuggingFaceTB--SmolVLM2-500M-Video-Instruct/snapshots/7b375e1b73b11138ff12fe22c8f2822d8fe03467",
+  "hub_offline": true,
+  "device": "cuda",
+  "compared_frames": [
+    {
+      "frame_index": 0,
+      "maximum_absolute_action_difference": 0.0
+    },
+    {
+      "frame_index": 794,
+      "maximum_absolute_action_difference": 0.0
+    },
+    {
+      "frame_index": 1568,
+      "maximum_absolute_action_difference": 0.0
+    },
+    {
+      "frame_index": 2336,
+      "maximum_absolute_action_difference": 0.0
+    },
+    {
+      "frame_index": 3129,
+      "maximum_absolute_action_difference": 0.0
+    }
+  ],
+  "interpretation": "Exact equality with five actions measured before local revision pinning; no model weights or observations changed."
+}

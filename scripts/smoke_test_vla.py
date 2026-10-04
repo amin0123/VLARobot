@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 import torch
 
 from src.common import IMAGE_KEY, write_json
+from src.training.model_assets import BACKBONE_REVISION, pin_backbone
 from src.training.precision import restore_checkpoint_precision
 
 
@@ -40,6 +41,7 @@ def main():
     }
     cfg.output_features = {"action": PolicyFeature(FeatureType.ACTION, (7,))}
     cfg.device, cfg.n_action_steps, cfg.load_vlm_weights = "cuda", 5, False
+    pin_backbone(cfg)
     cfg.resize_imgs_with_padding = (args.image_size, args.image_size)
     # All VLM and action expert weights are loaded from SmolVLA's checkpoint.
     # load_vlm_weights=False only avoids redundantly downloading the VLM's weights.
@@ -66,6 +68,7 @@ def main():
     assert torch.isfinite(chunk).all() and torch.isfinite(action).all()
     report = {
         "checkpoint": args.checkpoint,
+        "backbone_revision": BACKBONE_REVISION,
         "model_image_size": args.image_size,
         "restored_precision_values": restored,
         "device": "cuda",

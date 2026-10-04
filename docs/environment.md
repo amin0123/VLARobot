@@ -75,6 +75,15 @@ Machine-readable environment evidence is stored in `outputs/environment.json`.
 indexes. `setup.sh` installs that lock after selecting the CUDA PyTorch and CPU
 TorchCodec wheels explicitly. The editable project remains linked to this repo.
 
+`scripts/download_model.py` fetches the backbone's configuration/tokenizer files
+at the revision above. `src/training/model_assets.py` resolves that exact local
+snapshot for both the model constructor and tokenizer processor, including after
+moving a checkpoint to another Linux machine. Loading does not follow the Hub's
+mutable `main` reference. If the pinned assets are absent, run the download script.
+The complete SmolVLA checkpoint supplies the actual backbone weights; a separate
+backbone weight download is unnecessary. See the official
+[Hub revision and filtered-download API](https://huggingface.co/docs/huggingface_hub/guides/download).
+
 ## Host shell isolation
 
 The initial test attempt discovered `/opt/ros/jazzy` in the inherited Python path:
