@@ -89,7 +89,7 @@ That convenient link is created only after the run completes. During training,
 intermediate checkpoints are under `attempt_00_batch_32/checkpoints/` (with the
 actual attempt number and batch size), such as `010000/pretrained_model`.
 
-## A longer experiment
+## Longer experiments
 
 After the sanity run passes and its videos have been assessed:
 
@@ -105,6 +105,24 @@ reference recipe. Record actual steps, batch size, data, duration, and results.
 Use the official trainer's saved `train_config.json` and `--resume=true` to resume
 optimizer state; selecting a model through this wrapper's `--checkpoint` begins
 a new fine-tune with a fresh optimizer. Keep these two operations distinct.
+
+The completed full experiment uses FP32 trainable parameter storage, BF16
+computation, 20,000 steps, batch 32, 1,000 warm-up steps, and checkpoints every
+5,000 steps:
+
+```bash
+./scripts/train.sh --config training_full
+./scripts/evaluate.sh \
+  --checkpoint outputs/train/full/checkpoints/last/pretrained_model \
+  --output outputs/evaluation
+```
+
+On this machine it took 43.1 minutes, with no OOM retry. It sampled 640,000
+training frames with replacement from 3,526 frames in 45 demonstrations. Repeating
+the dataset 181.51 times does not create new scene coverage. Training loss fell
+to 0.002 while held-out flow loss rose to 0.09645; inspect the physical evaluation
+in `experiments.md` before judging model quality. Use `--output` to preserve the
+existing completed experiment when running another training job.
 
 The [current official guide](https://huggingface.co/docs/lerobot/smolvla), checked
 2026-10-04, illustrates a 20,000-step, batch-64 run and emphasizes repeated

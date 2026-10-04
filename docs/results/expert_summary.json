@@ -1,0 +1,9 @@
+{
+  "episodes": 100,
+  "successes": 100,
+  "success_rate": 1.0,
+  "wilson_95_low": 0.9630065017930143,
+  "wilson_95_high": 1.0,
+  "failure_categories": {},
+  "expert_fingerprint": "c7debd92059a49543db65df7e22e866f324dc4c3a620093e3c0b78fcf359462e"
+}

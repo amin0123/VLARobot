@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "steps": 20000,
+  "batch_size": 32,
+  "oom_retries": 0,
+  "wall_seconds": 2586.785848906,
+  "checkpoint": "outputs/train/full/checkpoints/last/pretrained_model",
+  "loss_log_entries": 200,
+  "initial_logged_loss": 1.232,
+  "final_logged_loss": 0.002,
+  "experiment_scope": "longer_fine_tune"
+}

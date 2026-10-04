@@ -319,7 +319,7 @@ seeds do not guarantee identical RTX pixels across GUI/headless modes. This
 fragility is a limitation to investigate, not a reason to omit the failed trial.
 The final quantitative suite uses a consistent headless configuration.
 
-## Full training budget
+## 20,000-step fine-tune — completed
 
 `configs/training_full.yaml` selects **20,000 steps**, batch 32, image 256, FP32
 trainable storage with BF16 computation, and the same 45-episode training split.
@@ -328,17 +328,39 @@ It starts again from the official base checkpoint with a fresh optimizer, uses
 frames (181.51 dataset passes). This tests increased optimization budget; it does
 not add demonstrations or claim to fix the dataset's coverage limitations.
 
-Final evaluation will use fresh seeds beginning at 300000. Development pilots
-and the known-success demonstration are excluded from the unseen-test estimate.
+The run completed in **2,586.8 s (43.1 minutes)** without an OOM retry. Logged
+training loss fell from **1.232 to 0.002**. The 64-sample held-out flow loss was
+**0.09645**, higher than the corrected 3,000-step model's 0.05111. This is a warning
+of possible overfitting, even though training predictions improved. These fixed
+validation samples come from only five episodes and are not an independent task
+success estimate.
+
+The final checkpoint is `outputs/train/full/checkpoints/last/pretrained_model`.
+Actual loss samples, GPU measurements, command/configuration, optimizer state,
+and validation values are saved under `outputs/train/full/`. Median total GPU
+usage sampled by `nvidia-smi` was **6,186 MiB**; the peak **8,873 MiB** includes
+brief concurrent simulator/diagnostic processes and is not the trainer's isolated
+allocation requirement.
+
+![Measured training curves on a logarithmic loss axis](media/training_loss.png)
+
+The curves use logged training batches; they are not validation curves. Runs
+have different schedules, batch sizes, and parameter precision, so wall time is
+an execution measurement rather than a controlled speed benchmark. Small exact
+result copies are versioned under [results/](results/README.md).
+
+Final evaluation uses fresh seeds beginning at 300000. Development pilots and
+the known-success demonstration are excluded from the unseen-test estimate.
 
 An offline diagnostic on all **45 training episode starts** measured mean first
 action XYZ error of **6.12 cm** for the 3,000-step FP32 model and **2.24 cm** for
-the full run's saved 10,000-step checkpoint. These samples emphasize initial
+the full run's saved 10,000-step checkpoint. At **20,000 steps**, the same diagnostic
+measured **0.788 cm mean / 0.707 cm median**. These samples emphasize initial
 localization rather than already-aligned expert states. They show improved
 training-scene action prediction, not an unseen-scene success rate. Exact samples
 and counterfactual-input diagnostics are in `outputs/action_diagnostics_*_starts.json`.
 
-## Outstanding runtime gates
+## Generalization scene integration — fixed and verified
 
 The six-condition scene integration check passed position, language, composition,
 lighting, and camera with the scripted teacher. Scale reset failed: changing a
@@ -374,8 +396,9 @@ bit-identical. Camera perturbation produced a much larger difference (about 11.1
 These image differences are diagnostics, not proof of the cause of any policy
 failure. All actual initial/final images remain under `outputs/checks/`.
 
-The 20,000-step run and final generalization evaluation are pending.
+The final 140-episode generalization evaluation is running; results will be added
+only after the physical rollouts complete.
 
 `setup.sh` was re-run successfully after switching to the tested package lock.
 It reused the existing simulator, passed dependency/CUDA checks, and did not
-install Isaac Sim or ROS. All ten unit/API/regression tests pass.
+install Isaac Sim or ROS. All eleven unit/API/regression tests pass.

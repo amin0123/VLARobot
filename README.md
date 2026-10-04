@@ -9,10 +9,10 @@ and honest generalization evaluation.
 capture pass runtime checks; the scripted expert achieved **100/100** randomized
 successes. The real dataset contains **50 demonstrations / 3,914 frames**, with
 45/5 train/validation episodes. Three replays have been visually reviewed.
-Pretrained CUDA inference and 300-step/3,000-step fine-tuning runs passed. The
-current model completed **one of six development trials**; the successful trial
+Pretrained CUDA inference and 300-step/3,000-step/20,000-step fine-tuning runs passed. The
+corrected 3,000-step model completed **one of six development trials**; the successful trial
 used a previously unseen scene. Earlier baselines failed all pilot tasks. A
-20,000-step run and fresh-seed evaluation are next. See
+140-episode fresh-seed evaluation is running. See
 [the experiment log](docs/experiments.md); expert success is separate from VLA success.
 
 ```mermaid
@@ -146,11 +146,17 @@ After the sanity run and physical evaluation:
 
 ```bash
 ./scripts/train.sh --config training_longer
+./scripts/train.sh --config training_full
 ```
 
 `configs/training_image512.yaml` repeats the 3,000-step experiment with SmolVLA's
 standard 512-pixel internal image size. Camera recordings remain 256 pixels;
 upsampling changes the encoder's patch sampling without adding scene detail.
+
+`training_full` uses the verified FP32 parameter-storage correction with BF16
+compute and 20,000 steps at batch 32. The completed run took 43.1 minutes on this
+machine. These are separate experiments with fresh optimizers; choose a new
+`--output` directory to run them again without overwriting their evidence.
 
 See [training details](docs/training.md) for freezing, flow matching, normalization,
 OOM behavior, and the difference between starting another fine-tune and resuming

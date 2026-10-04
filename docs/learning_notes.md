@@ -2,8 +2,8 @@
 
 Read this alongside the source and actual demonstration videos. The equations
 describe learning; the runnable implementation uses LeRobot's existing SmolVLA
-and trainer. Any numerical action examples below are explanatory examples, not
-reported experimental measurements.
+and trainer. The action-format example is illustrative; the section labeled
+“Walk through an actual successful rollout” uses recorded measurements.
 
 ## What is a VLA?
 

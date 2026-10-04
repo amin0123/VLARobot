@@ -1,0 +1,1328 @@
+{
+  "checkpoint": "outputs/train/full/checkpoints/last/pretrained_model",
+  "dataset": "datasets/splits/train",
+  "samples": 45,
+  "sampling": "episode_start",
+  "mean": {
+    "xyz_error_m": 0.007879442421512471,
+    "gripper_absolute_error": 0.0057927581999037,
+    "state_hold_xyz_error_m": 0.2557908167441686,
+    "blank_image_xyz_change_m": 0.13169444248908097,
+    "empty_language_xyz_change_m": 0.07303960373004277
+  },
+  "median": {
+    "xyz_error_m": 0.007070808205753565,
+    "gripper_absolute_error": 0.004458904266357422,
+    "state_hold_xyz_error_m": 0.24296154081821442,
+    "blank_image_xyz_change_m": 0.11958317458629608,
+    "empty_language_xyz_change_m": 0.06839174032211304
+  },
+  "interpretation": "First predicted action versus expert target on recorded states. Blank-image and empty-language changes test sensitivity only; they are out-of-distribution inputs and do not prove correct object localization or language grounding. No actions are executed in this diagnostic.",
+  "rows": [
+    {
+      "frame_index": 0,
+      "episode_index": 0,
+      "task": "Put the red cube in the green box.",
+      "flow_noise_seed": 42,
+      "expert_action": [
+        0.4347054064273834,
+        0.049844544380903244,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.42919567227363586,
+        0.06316586583852768,
+        0.21946831047534943,
+        3.141594409942627,
+        0.0,
+        0.0,
+        1.0016652345657349
+      ],
+      "xyz_error_m": 0.014425584115087986,
+      "gripper_absolute_error": 0.0016652345657348633,
+      "state_hold_xyz_error_m": 0.21870280802249908,
+      "blank_image_xyz_change_m": 0.10313629359006882,
+      "empty_language_xyz_change_m": 0.038040999323129654
+    },
+    {
+      "frame_index": 73,
+      "episode_index": 1,
+      "task": "Place the red block inside the blue container.",
+      "flow_noise_seed": 115,
+      "expert_action": [
+        0.4547714293003082,
+        -0.2324633151292801,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4579371213912964,
+        -0.23573462665081024,
+        0.220222607254982,
+        3.141606092453003,
+        0.0,
+        0.0,
+        1.0005197525024414
+      ],
+      "xyz_error_m": 0.004557701293379068,
+      "gripper_absolute_error": 0.0005197525024414062,
+      "state_hold_xyz_error_m": 0.3170331120491028,
+      "blank_image_xyz_change_m": 0.25392431020736694,
+      "empty_language_xyz_change_m": 0.1011248528957367
+    },
+    {
+      "frame_index": 160,
+      "episode_index": 2,
+      "task": "Move the green cube into the red box.",
+      "flow_noise_seed": 202,
+      "expert_action": [
+        0.42882999777793884,
+        0.0771803930401802,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.431937038898468,
+        0.07419145852327347,
+        0.2201305627822876,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0089818239212036
+      ],
+      "xyz_error_m": 0.0043132915161550045,
+      "gripper_absolute_error": 0.008981823921203613,
+      "state_hold_xyz_error_m": 0.22611159086227417,
+      "blank_image_xyz_change_m": 0.05928739532828331,
+      "empty_language_xyz_change_m": 0.0647076815366745
+    },
+    {
+      "frame_index": 241,
+      "episode_index": 3,
+      "task": "Move the green cube into the yellow box.",
+      "flow_noise_seed": 283,
+      "expert_action": [
+        0.3504655659198761,
+        -0.057285308837890625,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3515288829803467,
+        -0.053415097296237946,
+        0.221982941031456,
+        3.14158296585083,
+        0.0,
+        0.0,
+        0.9966967105865479
+      ],
+      "xyz_error_m": 0.004476744215935469,
+      "gripper_absolute_error": 0.0033032894134521484,
+      "state_hold_xyz_error_m": 0.22955285012722015,
+      "blank_image_xyz_change_m": 0.15022070705890656,
+      "empty_language_xyz_change_m": 0.02551058866083622
+    },
+    {
+      "frame_index": 326,
+      "episode_index": 4,
+      "task": "Pick up the blue object and put it in the red container.",
+      "flow_noise_seed": 368,
+      "expert_action": [
+        0.5036548376083374,
+        0.22882702946662903,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4981798529624939,
+        0.23330950736999512,
+        0.22085505723953247,
+        3.141572952270508,
+        0.0,
+        0.0,
+        0.9992339611053467
+      ],
+      "xyz_error_m": 0.0071273548528552055,
+      "gripper_absolute_error": 0.0007660388946533203,
+      "state_hold_xyz_error_m": 0.32394784688949585,
+      "blank_image_xyz_change_m": 0.15700316429138184,
+      "empty_language_xyz_change_m": 0.16572622954845428
+    },
+    {
+      "frame_index": 416,
+      "episode_index": 5,
+      "task": "Move the blue cube into the green box.",
+      "flow_noise_seed": 458,
+      "expert_action": [
+        0.4959498941898346,
+        -0.0791778713464737,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.49202093482017517,
+        -0.07349199801683426,
+        0.22149346768856049,
+        3.1416494846343994,
+        0.0,
+        0.0,
+        1.0010708570480347
+      ],
+      "xyz_error_m": 0.007070808205753565,
+      "gripper_absolute_error": 0.001070857048034668,
+      "state_hold_xyz_error_m": 0.239935964345932,
+      "blank_image_xyz_change_m": 0.15227864682674408,
+      "empty_language_xyz_change_m": 0.04563683271408081
+    },
+    {
+      "frame_index": 486,
+      "episode_index": 6,
+      "task": "Put the yellow cube in the green box.",
+      "flow_noise_seed": 528,
+      "expert_action": [
+        0.3987584114074707,
+        -0.2193792164325714,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.40083080530166626,
+        -0.22230170667171478,
+        0.22116760909557343,
+        3.141711950302124,
+        0.0,
+        0.0,
+        0.996549129486084
+      ],
+      "xyz_error_m": 0.0037681665271520615,
+      "gripper_absolute_error": 0.0034508705139160156,
+      "state_hold_xyz_error_m": 0.30573347210884094,
+      "blank_image_xyz_change_m": 0.257146954536438,
+      "empty_language_xyz_change_m": 0.07873766869306564
+    },
+    {
+      "frame_index": 563,
+      "episode_index": 7,
+      "task": "Place the yellow block inside the blue container.",
+      "flow_noise_seed": 605,
+      "expert_action": [
+        0.37927114963531494,
+        -0.06111835315823555,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3760922849178314,
+        -0.07283192873001099,
+        0.22070777416229248,
+        3.141603708267212,
+        0.0,
+        0.0,
+        1.0018671751022339
+      ],
+      "xyz_error_m": 0.01215787697583437,
+      "gripper_absolute_error": 0.0018671751022338867,
+      "state_hold_xyz_error_m": 0.2239665687084198,
+      "blank_image_xyz_change_m": 0.04728000611066818,
+      "empty_language_xyz_change_m": 0.0975332260131836
+    },
+    {
+      "frame_index": 639,
+      "episode_index": 8,
+      "task": "Put the red cube in the green box.",
+      "flow_noise_seed": 681,
+      "expert_action": [
+        0.3324306309223175,
+        -0.08308006078004837,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3324472904205322,
+        -0.08623239398002625,
+        0.2228383719921112,
+        3.141617774963379,
+        0.0,
+        0.0,
+        0.999762773513794
+      ],
+      "xyz_error_m": 0.0042419154196977615,
+      "gripper_absolute_error": 0.0002372264862060547,
+      "state_hold_xyz_error_m": 0.24296154081821442,
+      "blank_image_xyz_change_m": 0.1546173095703125,
+      "empty_language_xyz_change_m": 0.06605428457260132
+    },
+    {
+      "frame_index": 717,
+      "episode_index": 9,
+      "task": "Take the red cube to the blue box.",
+      "flow_noise_seed": 759,
+      "expert_action": [
+        0.3408988416194916,
+        0.0171872116625309,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.33916932344436646,
+        0.015378957614302635,
+        0.22265593707561493,
+        3.141564130783081,
+        0.0,
+        0.0,
+        1.0044589042663574
+      ],
+      "xyz_error_m": 0.0036489758640527725,
+      "gripper_absolute_error": 0.004458904266357422,
+      "state_hold_xyz_error_m": 0.22598126530647278,
+      "blank_image_xyz_change_m": 0.014250222593545914,
+      "empty_language_xyz_change_m": 0.05994243174791336
+    },
+    {
+      "frame_index": 794,
+      "episode_index": 10,
+      "task": "Put the red cube in the yellow box.",
+      "flow_noise_seed": 836,
+      "expert_action": [
+        0.3825080096721649,
+        0.030395755544304848,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.38351529836654663,
+        0.033001258969306946,
+        0.21905791759490967,
+        3.141554594039917,
+        0.0,
+        0.0,
+        1.003044843673706
+      ],
+      "xyz_error_m": 0.0029480154626071453,
+      "gripper_absolute_error": 0.0030448436737060547,
+      "state_hold_xyz_error_m": 0.21706567704677582,
+      "blank_image_xyz_change_m": 0.047853268682956696,
+      "empty_language_xyz_change_m": 0.03216703236103058
+    },
+    {
+      "frame_index": 874,
+      "episode_index": 11,
+      "task": "Put the green cube in the yellow box.",
+      "flow_noise_seed": 916,
+      "expert_action": [
+        0.4679856598377228,
+        -0.02516665868461132,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4645921587944031,
+        -0.02691679075360298,
+        0.2208573967218399,
+        3.1416091918945312,
+        0.0,
+        0.0,
+        1.0053972005844116
+      ],
+      "xyz_error_m": 0.00391330337151885,
+      "gripper_absolute_error": 0.005397200584411621,
+      "state_hold_xyz_error_m": 0.21973706781864166,
+      "blank_image_xyz_change_m": 0.14904619753360748,
+      "empty_language_xyz_change_m": 0.028648149222135544
+    },
+    {
+      "frame_index": 955,
+      "episode_index": 12,
+      "task": "Take the blue cube to the red box.",
+      "flow_noise_seed": 997,
+      "expert_action": [
+        0.43250715732574463,
+        -0.12817710638046265,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4310852885246277,
+        -0.13219960033893585,
+        0.22165736556053162,
+        3.1415956020355225,
+        0.0,
+        0.0,
+        1.0011926889419556
+      ],
+      "xyz_error_m": 0.004577011335641146,
+      "gripper_absolute_error": 0.0011926889419555664,
+      "state_hold_xyz_error_m": 0.24839802086353302,
+      "blank_image_xyz_change_m": 0.14061298966407776,
+      "empty_language_xyz_change_m": 0.0880838930606842
+    },
+    {
+      "frame_index": 1032,
+      "episode_index": 13,
+      "task": "Put the blue cube in the green box.",
+      "flow_noise_seed": 1074,
+      "expert_action": [
+        0.32670822739601135,
+        -0.16962774097919464,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.319489061832428,
+        -0.16712984442710876,
+        0.22163638472557068,
+        3.1415627002716064,
+        0.0,
+        0.0,
+        0.9950790405273438
+      ],
+      "xyz_error_m": 0.007812400348484516,
+      "gripper_absolute_error": 0.00492095947265625,
+      "state_hold_xyz_error_m": 0.2861800491809845,
+      "blank_image_xyz_change_m": 0.15179623663425446,
+      "empty_language_xyz_change_m": 0.08759941905736923
+    },
+    {
+      "frame_index": 1112,
+      "episode_index": 14,
+      "task": "Move the yellow cube into the green box.",
+      "flow_noise_seed": 1154,
+      "expert_action": [
+        0.5141098499298096,
+        0.18730488419532776,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.5097296237945557,
+        0.1888776272535324,
+        0.21847423911094666,
+        3.141660690307617,
+        0.0,
+        0.0,
+        1.0099122524261475
+      ],
+      "xyz_error_m": 0.004897738341242075,
+      "gripper_absolute_error": 0.009912252426147461,
+      "state_hold_xyz_error_m": 0.2993168830871582,
+      "blank_image_xyz_change_m": 0.12410759925842285,
+      "empty_language_xyz_change_m": 0.1013520136475563
+    },
+    {
+      "frame_index": 1190,
+      "episode_index": 15,
+      "task": "Place the yellow block inside the blue container.",
+      "flow_noise_seed": 1232,
+      "expert_action": [
+        0.4547143876552582,
+        -0.014164822176098824,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4596122205257416,
+        -0.020998815074563026,
+        0.22282129526138306,
+        3.1415839195251465,
+        0.0,
+        0.0,
+        1.0048191547393799
+      ],
+      "xyz_error_m": 0.008868592791259289,
+      "gripper_absolute_error": 0.004819154739379883,
+      "state_hold_xyz_error_m": 0.2160257250070572,
+      "blank_image_xyz_change_m": 0.05958850309252739,
+      "empty_language_xyz_change_m": 0.06052876263856888
+    },
+    {
+      "frame_index": 1262,
+      "episode_index": 16,
+      "task": "Move the red cube into the green box.",
+      "flow_noise_seed": 1304,
+      "expert_action": [
+        0.4506751298904419,
+        -0.02161918580532074,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.45468682050704956,
+        -0.012782566249370575,
+        0.21987886726856232,
+        3.1415913105010986,
+        0.0,
+        0.0,
+        1.0073026418685913
+      ],
+      "xyz_error_m": 0.009705368429422379,
+      "gripper_absolute_error": 0.007302641868591309,
+      "state_hold_xyz_error_m": 0.2159704864025116,
+      "blank_image_xyz_change_m": 0.11930502206087112,
+      "empty_language_xyz_change_m": 0.017603417858481407
+    },
+    {
+      "frame_index": 1333,
+      "episode_index": 17,
+      "task": "Take the red cube to the blue box.",
+      "flow_noise_seed": 1375,
+      "expert_action": [
+        0.3677244484424591,
+        -0.049921922385692596,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3735924959182739,
+        -0.03969929367303848,
+        0.2211957573890686,
+        3.141592025756836,
+        0.0,
+        0.0,
+        1.0035279989242554
+      ],
+      "xyz_error_m": 0.01184761431068182,
+      "gripper_absolute_error": 0.003527998924255371,
+      "state_hold_xyz_error_m": 0.22341880202293396,
+      "blank_image_xyz_change_m": 0.07835519313812256,
+      "empty_language_xyz_change_m": 0.03944293037056923
+    },
+    {
+      "frame_index": 1410,
+      "episode_index": 18,
+      "task": "Take the red cube to the yellow box.",
+      "flow_noise_seed": 1452,
+      "expert_action": [
+        0.447314590215683,
+        -0.10383541136980057,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.442604660987854,
+        -0.10770381987094879,
+        0.2199821025133133,
+        3.141544818878174,
+        0.0,
+        0.0,
+        1.0102888345718384
+      ],
+      "xyz_error_m": 0.006094943732023239,
+      "gripper_absolute_error": 0.010288834571838379,
+      "state_hold_xyz_error_m": 0.23820316791534424,
+      "blank_image_xyz_change_m": 0.14030343294143677,
+      "empty_language_xyz_change_m": 0.06839174032211304
+    },
+    {
+      "frame_index": 1494,
+      "episode_index": 19,
+      "task": "Pick up the green object and put it in the red container.",
+      "flow_noise_seed": 1536,
+      "expert_action": [
+        0.5381223559379578,
+        -0.1858089417219162,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.5266541838645935,
+        -0.19504708051681519,
+        0.21907800436019897,
+        3.1416220664978027,
+        0.0,
+        0.0,
+        1.0113892555236816
+      ],
+      "xyz_error_m": 0.014755075797438622,
+      "gripper_absolute_error": 0.01138925552368164,
+      "state_hold_xyz_error_m": 0.3070604205131531,
+      "blank_image_xyz_change_m": 0.34575679898262024,
+      "empty_language_xyz_change_m": 0.07848015427589417
+    },
+    {
+      "frame_index": 1568,
+      "episode_index": 20,
+      "task": "Put the blue cube in the red box.",
+      "flow_noise_seed": 1610,
+      "expert_action": [
+        0.5010829567909241,
+        -0.1115339919924736,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4966849982738495,
+        -0.11707735061645508,
+        0.21962794661521912,
+        3.141601085662842,
+        0.0,
+        0.0,
+        1.0007067918777466
+      ],
+      "xyz_error_m": 0.007085850927978754,
+      "gripper_absolute_error": 0.000706791877746582,
+      "state_hold_xyz_error_m": 0.25412532687187195,
+      "blank_image_xyz_change_m": 0.19479575753211975,
+      "empty_language_xyz_change_m": 0.09802386909723282
+    },
+    {
+      "frame_index": 1643,
+      "episode_index": 21,
+      "task": "Place the blue block inside the green container.",
+      "flow_noise_seed": 1685,
+      "expert_action": [
+        0.45722082257270813,
+        -0.21983031928539276,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.45598745346069336,
+        -0.2181626260280609,
+        0.22021174430847168,
+        3.14163875579834,
+        0.0,
+        0.0,
+        0.9944711923599243
+      ],
+      "xyz_error_m": 0.002085002837702632,
+      "gripper_absolute_error": 0.005528807640075684,
+      "state_hold_xyz_error_m": 0.30820217728614807,
+      "blank_image_xyz_change_m": 0.18166233599185944,
+      "empty_language_xyz_change_m": 0.1619998961687088
+    },
+    {
+      "frame_index": 1720,
+      "episode_index": 22,
+      "task": "Take the yellow cube to the green box.",
+      "flow_noise_seed": 1762,
+      "expert_action": [
+        0.46330633759498596,
+        -0.2372104823589325,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.46455448865890503,
+        -0.22950409352779388,
+        0.2211102396249771,
+        3.1415939331054688,
+        0.0,
+        0.0,
+        0.9975188970565796
+      ],
+      "xyz_error_m": 0.007885362952947617,
+      "gripper_absolute_error": 0.00248110294342041,
+      "state_hold_xyz_error_m": 0.3216550350189209,
+      "blank_image_xyz_change_m": 0.2856054902076721,
+      "empty_language_xyz_change_m": 0.08282533288002014
+    },
+    {
+      "frame_index": 1798,
+      "episode_index": 23,
+      "task": "Place the yellow block inside the blue container.",
+      "flow_noise_seed": 1840,
+      "expert_action": [
+        0.5261847376823425,
+        -0.19348441064357758,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.521053671836853,
+        -0.19013415277004242,
+        0.21871095895767212,
+        3.141551971435547,
+        0.0,
+        0.0,
+        1.0101350545883179
+      ],
+      "xyz_error_m": 0.006262083072215319,
+      "gripper_absolute_error": 0.010135054588317871,
+      "state_hold_xyz_error_m": 0.3073132038116455,
+      "blank_image_xyz_change_m": 0.2131355106830597,
+      "empty_language_xyz_change_m": 0.13188114762306213
+    },
+    {
+      "frame_index": 1878,
+      "episode_index": 24,
+      "task": "Place the red block inside the green container.",
+      "flow_noise_seed": 1920,
+      "expert_action": [
+        0.3261549472808838,
+        0.029830364510416985,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3188907504081726,
+        0.02383163757622242,
+        0.21994830667972565,
+        3.141634702682495,
+        0.0,
+        0.0,
+        0.9990589618682861
+      ],
+      "xyz_error_m": 0.009421037510037422,
+      "gripper_absolute_error": 0.0009410381317138672,
+      "state_hold_xyz_error_m": 0.2326267659664154,
+      "blank_image_xyz_change_m": 0.02984302118420601,
+      "empty_language_xyz_change_m": 0.07582936435937881
+    },
+    {
+      "frame_index": 1957,
+      "episode_index": 25,
+      "task": "Take the red cube to the blue box.",
+      "flow_noise_seed": 1999,
+      "expert_action": [
+        0.4995581805706024,
+        -0.05471164360642433,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.5032688975334167,
+        -0.05569903552532196,
+        0.2207062840461731,
+        3.1415207386016846,
+        0.0,
+        0.0,
+        0.9906811714172363
+      ],
+      "xyz_error_m": 0.0039042544085532427,
+      "gripper_absolute_error": 0.009318828582763672,
+      "state_hold_xyz_error_m": 0.23426112532615662,
+      "blank_image_xyz_change_m": 0.17082205414772034,
+      "empty_language_xyz_change_m": 0.03501575067639351
+    },
+    {
+      "frame_index": 2030,
+      "episode_index": 26,
+      "task": "Move the red cube into the yellow box.",
+      "flow_noise_seed": 2072,
+      "expert_action": [
+        0.5040914416313171,
+        0.15500980615615845,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.5076479315757751,
+        0.15584596991539001,
+        0.21960102021694183,
+        3.1416032314300537,
+        0.0,
+        0.0,
+        1.0022354125976562
+      ],
+      "xyz_error_m": 0.0036751837469637394,
+      "gripper_absolute_error": 0.00223541259765625,
+      "state_hold_xyz_error_m": 0.27691975235939026,
+      "blank_image_xyz_change_m": 0.13098181784152985,
+      "empty_language_xyz_change_m": 0.09415186941623688
+    },
+    {
+      "frame_index": 2105,
+      "episode_index": 27,
+      "task": "Pick up the green object and put it in the yellow container.",
+      "flow_noise_seed": 2147,
+      "expert_action": [
+        0.4656745493412018,
+        0.08552739769220352,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4607028365135193,
+        0.08604467660188675,
+        0.22026947140693665,
+        3.141573190689087,
+        0.0,
+        0.0,
+        1.00392484664917
+      ],
+      "xyz_error_m": 0.005005808547139168,
+      "gripper_absolute_error": 0.003924846649169922,
+      "state_hold_xyz_error_m": 0.23395372927188873,
+      "blank_image_xyz_change_m": 0.06009446084499359,
+      "empty_language_xyz_change_m": 0.06398282945156097
+    },
+    {
+      "frame_index": 2182,
+      "episode_index": 28,
+      "task": "Put the blue cube in the red box.",
+      "flow_noise_seed": 2224,
+      "expert_action": [
+        0.32751744985580444,
+        -0.12082096934318542,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.32602694630622864,
+        -0.12963047623634338,
+        0.21991458535194397,
+        3.141569137573242,
+        0.0,
+        0.0,
+        1.001328945159912
+      ],
+      "xyz_error_m": 0.008935116231441498,
+      "gripper_absolute_error": 0.0013289451599121094,
+      "state_hold_xyz_error_m": 0.2599579393863678,
+      "blank_image_xyz_change_m": 0.11958317458629608,
+      "empty_language_xyz_change_m": 0.09462926536798477
+    },
+    {
+      "frame_index": 2264,
+      "episode_index": 29,
+      "task": "Take the blue cube to the green box.",
+      "flow_noise_seed": 2306,
+      "expert_action": [
+        0.4531079828739166,
+        -0.10172376781702042,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.45237791538238525,
+        -0.09492214769124985,
+        0.22102969884872437,
+        3.1415982246398926,
+        0.0,
+        0.0,
+        1.0114922523498535
+      ],
+      "xyz_error_m": 0.0069177537225186825,
+      "gripper_absolute_error": 0.011492252349853516,
+      "state_hold_xyz_error_m": 0.23810651898384094,
+      "blank_image_xyz_change_m": 0.13957087695598602,
+      "empty_language_xyz_change_m": 0.07371941953897476
+    },
+    {
+      "frame_index": 2336,
+      "episode_index": 30,
+      "task": "Take the yellow cube to the green box.",
+      "flow_noise_seed": 2378,
+      "expert_action": [
+        0.43273213505744934,
+        0.08577218651771545,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.43992435932159424,
+        0.08314898610115051,
+        0.2197754979133606,
+        3.141592025756836,
+        0.0,
+        0.0,
+        1.0041037797927856
+      ],
+      "xyz_error_m": 0.007658960297703743,
+      "gripper_absolute_error": 0.0041037797927856445,
+      "state_hold_xyz_error_m": 0.22942586243152618,
+      "blank_image_xyz_change_m": 0.060693636536598206,
+      "empty_language_xyz_change_m": 0.020495301112532616
+    },
+    {
+      "frame_index": 2411,
+      "episode_index": 31,
+      "task": "Take the yellow cube to the blue box.",
+      "flow_noise_seed": 2453,
+      "expert_action": [
+        0.5120559334754944,
+        -0.005485175177454948,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.5062866806983948,
+        0.0032956190407276154,
+        0.21907654404640198,
+        3.14158296585083,
+        0.0,
+        0.0,
+        1.0261911153793335
+      ],
+      "xyz_error_m": 0.010547008365392685,
+      "gripper_absolute_error": 0.026191115379333496,
+      "state_hold_xyz_error_m": 0.23268376290798187,
+      "blank_image_xyz_change_m": 0.10906098037958145,
+      "empty_language_xyz_change_m": 0.04963020235300064
+    },
+    {
+      "frame_index": 2481,
+      "episode_index": 32,
+      "task": "Take the red cube to the green box.",
+      "flow_noise_seed": 2523,
+      "expert_action": [
+        0.38469332456588745,
+        0.14444302022457123,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.38883745670318604,
+        0.133303701877594,
+        0.21951590478420258,
+        3.1416127681732178,
+        0.0,
+        0.0,
+        1.0052729845046997
+      ],
+      "xyz_error_m": 0.011895066127181053,
+      "gripper_absolute_error": 0.005272984504699707,
+      "state_hold_xyz_error_m": 0.2586747407913208,
+      "blank_image_xyz_change_m": 0.10162641108036041,
+      "empty_language_xyz_change_m": 0.019898036494851112
+    },
+    {
+      "frame_index": 2559,
+      "episode_index": 33,
+      "task": "Place the red block inside the blue container.",
+      "flow_noise_seed": 2601,
+      "expert_action": [
+        0.3909139037132263,
+        -0.09165128320455551,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.38862648606300354,
+        -0.09628316015005112,
+        0.22077283263206482,
+        3.1415786743164062,
+        0.0,
+        0.0,
+        0.9968434572219849
+      ],
+      "xyz_error_m": 0.005223392974585295,
+      "gripper_absolute_error": 0.0031565427780151367,
+      "state_hold_xyz_error_m": 0.23257048428058624,
+      "blank_image_xyz_change_m": 0.09926723688840866,
+      "empty_language_xyz_change_m": 0.0995093509554863
+    },
+    {
+      "frame_index": 2635,
+      "episode_index": 34,
+      "task": "Take the red cube to the yellow box.",
+      "flow_noise_seed": 2677,
+      "expert_action": [
+        0.39188694953918457,
+        -0.19270940124988556,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3964523673057556,
+        -0.18900848925113678,
+        0.21738117933273315,
+        3.1415414810180664,
+        0.0,
+        0.0,
+        0.9881546497344971
+      ],
+      "xyz_error_m": 0.006434128154069185,
+      "gripper_absolute_error": 0.01184535026550293,
+      "state_hold_xyz_error_m": 0.28770941495895386,
+      "blank_image_xyz_change_m": 0.20640647411346436,
+      "empty_language_xyz_change_m": 0.05931820720434189
+    },
+    {
+      "frame_index": 2726,
+      "episode_index": 35,
+      "task": "Put the green cube in the red box.",
+      "flow_noise_seed": 2768,
+      "expert_action": [
+        0.44185730814933777,
+        0.1256839632987976,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4376562237739563,
+        0.12397865206003189,
+        0.21932341158390045,
+        3.1415982246398926,
+        0.0,
+        0.0,
+        1.0111842155456543
+      ],
+      "xyz_error_m": 0.004584208596497774,
+      "gripper_absolute_error": 0.011184215545654297,
+      "state_hold_xyz_error_m": 0.24789370596408844,
+      "blank_image_xyz_change_m": 0.1177959218621254,
+      "empty_language_xyz_change_m": 0.08188129216432571
+    },
+    {
+      "frame_index": 2810,
+      "episode_index": 36,
+      "task": "Place the green block inside the yellow container.",
+      "flow_noise_seed": 2852,
+      "expert_action": [
+        0.365612268447876,
+        0.1585998684167862,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.3661574721336365,
+        0.15397270023822784,
+        0.22007711231708527,
+        3.14158034324646,
+        0.0,
+        0.0,
+        1.0072778463363647
+      ],
+      "xyz_error_m": 0.004659815225750208,
+      "gripper_absolute_error": 0.007277846336364746,
+      "state_hold_xyz_error_m": 0.2697945833206177,
+      "blank_image_xyz_change_m": 0.0957387387752533,
+      "empty_language_xyz_change_m": 0.05089806392788887
+    },
+    {
+      "frame_index": 2890,
+      "episode_index": 37,
+      "task": "Pick up the blue object and put it in the red container.",
+      "flow_noise_seed": 2932,
+      "expert_action": [
+        0.3691427707672119,
+        0.18646997213363647,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.38156041502952576,
+        0.20121008157730103,
+        0.22205181419849396,
+        3.141545057296753,
+        0.0,
+        0.0,
+        0.9818695783615112
+      ],
+      "xyz_error_m": 0.019382432103157043,
+      "gripper_absolute_error": 0.01813042163848877,
+      "state_hold_xyz_error_m": 0.2864573895931244,
+      "blank_image_xyz_change_m": 0.022827671840786934,
+      "empty_language_xyz_change_m": 0.13479368388652802
+    },
+    {
+      "frame_index": 2980,
+      "episode_index": 38,
+      "task": "Take the blue cube to the green box.",
+      "flow_noise_seed": 3022,
+      "expert_action": [
+        0.360614150762558,
+        0.04061117768287659,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.371091365814209,
+        0.04823673516511917,
+        0.22129319608211517,
+        3.1416072845458984,
+        0.0,
+        0.0,
+        1.0041340589523315
+      ],
+      "xyz_error_m": 0.01302280742675066,
+      "gripper_absolute_error": 0.004134058952331543,
+      "state_hold_xyz_error_m": 0.22320473194122314,
+      "blank_image_xyz_change_m": 0.048581697046756744,
+      "empty_language_xyz_change_m": 0.03324895352125168
+    },
+    {
+      "frame_index": 3056,
+      "episode_index": 39,
+      "task": "Take the yellow cube to the green box.",
+      "flow_noise_seed": 3098,
+      "expert_action": [
+        0.43111756443977356,
+        -0.11680636554956436,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.42251676321029663,
+        -0.1297733634710312,
+        0.22059321403503418,
+        3.1416358947753906,
+        0.0,
+        0.0,
+        1.0051453113555908
+      ],
+      "xyz_error_m": 0.015571407042443752,
+      "gripper_absolute_error": 0.00514531135559082,
+      "state_hold_xyz_error_m": 0.24263964593410492,
+      "blank_image_xyz_change_m": 0.16539064049720764,
+      "empty_language_xyz_change_m": 0.061116110533475876
+    },
+    {
+      "frame_index": 3129,
+      "episode_index": 40,
+      "task": "Pick up the yellow object and put it in the blue container.",
+      "flow_noise_seed": 3171,
+      "expert_action": [
+        0.3210585415363312,
+        0.07121355831623077,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.31977057456970215,
+        0.06254395097494125,
+        0.22099603712558746,
+        3.141619920730591,
+        0.0,
+        0.0,
+        0.9913054704666138
+      ],
+      "xyz_error_m": 0.008821169845759869,
+      "gripper_absolute_error": 0.00869452953338623,
+      "state_hold_xyz_error_m": 0.24340468645095825,
+      "blank_image_xyz_change_m": 0.0318944938480854,
+      "empty_language_xyz_change_m": 0.1012856587767601
+    },
+    {
+      "frame_index": 3209,
+      "episode_index": 41,
+      "task": "Put the red cube in the blue box.",
+      "flow_noise_seed": 3251,
+      "expert_action": [
+        0.3393414616584778,
+        0.15038113296031952,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.33548790216445923,
+        0.15038107335567474,
+        0.21822655200958252,
+        3.1417033672332764,
+        0.0,
+        0.0,
+        1.0042303800582886
+      ],
+      "xyz_error_m": 0.004242055583745241,
+      "gripper_absolute_error": 0.004230380058288574,
+      "state_hold_xyz_error_m": 0.27133965492248535,
+      "blank_image_xyz_change_m": 0.09196600317955017,
+      "empty_language_xyz_change_m": 0.09197841584682465
+    },
+    {
+      "frame_index": 3287,
+      "episode_index": 42,
+      "task": "Place the red block inside the yellow container.",
+      "flow_noise_seed": 3329,
+      "expert_action": [
+        0.4417404532432556,
+        -0.03598161041736603,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.44483643770217896,
+        -0.053856946527957916,
+        0.22096212208271027,
+        3.141625165939331,
+        0.0,
+        0.0,
+        1.0048506259918213
+      ],
+      "xyz_error_m": 0.018166959285736084,
+      "gripper_absolute_error": 0.004850625991821289,
+      "state_hold_xyz_error_m": 0.21666482090950012,
+      "blank_image_xyz_change_m": 0.1125054657459259,
+      "empty_language_xyz_change_m": 0.050149932503700256
+    },
+    {
+      "frame_index": 3367,
+      "episode_index": 43,
+      "task": "Pick up the green object and put it in the red container.",
+      "flow_noise_seed": 3409,
+      "expert_action": [
+        0.3255887031555176,
+        -0.22909991443157196,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.33407625555992126,
+        -0.2223907858133316,
+        0.2218320369720459,
+        3.1416995525360107,
+        0.0,
+        0.0,
+        1.0027637481689453
+      ],
+      "xyz_error_m": 0.010973026975989342,
+      "gripper_absolute_error": 0.0027637481689453125,
+      "state_hold_xyz_error_m": 0.3252921998500824,
+      "blank_image_xyz_change_m": 0.3370303809642792,
+      "empty_language_xyz_change_m": 0.11886116117238998
+    },
+    {
+      "frame_index": 3450,
+      "episode_index": 44,
+      "task": "Pick up the green object and put it in the yellow container.",
+      "flow_noise_seed": 3492,
+      "expert_action": [
+        0.4910961389541626,
+        0.11022097617387772,
+        0.2199999988079071,
+        3.1415927410125732,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "predicted_action": [
+        0.4994398057460785,
+        0.11738944798707962,
+        0.220374196767807,
+        3.141526699066162,
+        0.0,
+        0.0,
+        1.0074831247329712
+      ],
+      "xyz_error_m": 0.011006534099578857,
+      "gripper_absolute_error": 0.007483124732971191,
+      "state_hold_xyz_error_m": 0.2504061758518219,
+      "blank_image_xyz_change_m": 0.09349940717220306,
+      "empty_language_xyz_change_m": 0.056346744298934937
+    }
+  ]
+}

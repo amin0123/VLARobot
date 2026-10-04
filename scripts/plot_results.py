@@ -32,6 +32,7 @@ def main():
             xlabel="Training wall time (minutes)",
             ylabel="Logged flow-matching loss",
             title="SmolVLA fine-tuning",
+            yscale="log",
         )
         ax.legend()
         ax.grid(alpha=0.2)
