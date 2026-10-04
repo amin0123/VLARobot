@@ -22,13 +22,19 @@ def main():
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--root", default="datasets/splits/train")
     parser.add_argument("--samples", type=int, default=32)
+    parser.add_argument("--sampling", choices=("uniform", "episode_start"), default="uniform")
     parser.add_argument("--output", type=Path, default=Path("outputs/action_diagnostics.json"))
     args = parser.parse_args()
     if args.samples < 1:
         raise ValueError("samples must be positive")
     ds = LeRobotDataset("local/vlarobot_pick_place", root=args.root, video_backend="pyav")
     policy = VLAPolicy(args.checkpoint)
-    indices = np.linspace(0, len(ds) - 1, min(args.samples, len(ds)), dtype=int)
+    candidates = (
+        np.asarray(ds.meta.episodes["dataset_from_index"], dtype=int)
+        if args.sampling == "episode_start"
+        else np.arange(len(ds))
+    )
+    indices = candidates[np.linspace(0, len(candidates) - 1, min(args.samples, len(candidates)), dtype=int)]
     rows = []
 
     def predict(inputs, seed):
@@ -70,6 +76,7 @@ def main():
         "checkpoint": args.checkpoint,
         "dataset": args.root,
         "samples": len(rows),
+        "sampling": args.sampling,
         "mean": {key: float(np.mean([row[key] for row in rows])) for key in measures},
         "median": {key: float(np.median([row[key] for row in rows])) for key in measures},
         "interpretation": (

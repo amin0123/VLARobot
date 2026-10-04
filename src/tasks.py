@@ -53,6 +53,17 @@ def sample_task(index: int, seed: int, condition="train") -> Task:
     )
 
 
+def evaluation_task(index, seed, condition, training_rows, instruction_sampling="seen"):
+    """Hold actual recorded wording fixed across the position/visual conditions."""
+    task = sample_task(index, seed, condition)
+    if instruction_sampling == "seen" and condition in ("position", "lighting", "camera", "scale"):
+        for row in training_rows:
+            if (row["source"], row["destination"]) == (task.source, task.destination):
+                return Task(row["source"], row["destination"], row["instruction"], row["template_id"])
+        raise ValueError(f"No training instruction for {task.source} → {task.destination}")
+    return task
+
+
 def task_from_instruction(instruction: str, source=None, destination=None) -> Task:
     """Resolve *metric labels only*. The original instruction goes unchanged to SmolVLA.
 

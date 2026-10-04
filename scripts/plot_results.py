@@ -15,6 +15,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--training", type=Path, nargs="*", default=[])
     parser.add_argument("--evaluation", type=Path)
+    parser.add_argument("--trace", type=Path, help="Plot recorded action targets and measured robot state")
+    parser.add_argument("--fps", type=float, default=10)
     parser.add_argument("--output", type=Path, default=Path("outputs/plots"))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -52,6 +54,36 @@ def main():
         ax.tick_params(axis="x", rotation=25)
         ax.grid(axis="y", alpha=0.2)
         fig.savefig(args.output / "evaluation.png", dpi=180)
+        plt.close(fig)
+    if args.trace:
+        data = json.loads(args.trace.read_text())
+        actions = np.asarray(data["actions"])
+        tcp = np.asarray([frame["tcp"] for frame in data["trace"]])
+        opening = np.asarray([frame["gripper_width"] for frame in data["trace"]])
+        if args.fps <= 0 or len(tcp) != len(actions) + 1:
+            raise ValueError("Expected positive FPS and one more state than recorded actions")
+        action_time = np.arange(len(actions)) / args.fps
+        state_time = np.arange(len(tcp)) / args.fps
+        fig, axes = plt.subplots(2, 2, figsize=(10, 6), layout="constrained")
+        for dim, ax in enumerate(axes.flat):
+            if dim < 3:
+                ax.step(action_time, actions[:, dim], where="post", label="Predicted TCP target")
+                ax.plot(state_time, tcp[:, dim], label="Measured TCP")
+                ax.set(ylabel=f"{'XYZ'[dim]} (m)")
+            else:
+                ax.step(
+                    action_time,
+                    np.clip(actions[:, 6], 0, 1) * 0.08,
+                    where="post",
+                    label="Commanded opening",
+                )
+                ax.plot(state_time, opening, label="Measured opening")
+                ax.set(ylabel="Gripper width (m)")
+            ax.set(xlabel="Simulation time (s)")
+            ax.grid(alpha=0.2)
+            ax.legend(fontsize=8)
+        fig.suptitle(data["task"]["instruction"])
+        fig.savefig(args.output / "action_trace.png", dpi=180)
         plt.close(fig)
     print(f"Saved measured plots under {args.output}")
 

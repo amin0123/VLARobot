@@ -226,6 +226,40 @@ There is no intermediate “red cube at XYZ” message produced by a detector.
 Interpreting image features is distributed across the learned network rather
 than exposed as a hand-designed object table.
 
+### Walk through an actual successful rollout
+
+The corrected 3,000-step policy completed development seed 100000 for “Pick up
+the red object and put it in the green container.” These are rounded measurements
+from that run, not illustrative or expert-generated actions. Each row shows the
+state **before** its predicted action is executed. Positions/widths are metres.
+
+| Step | Measured TCP XYZ | Predicted target XYZ | Opening command | Measured width |
+|---:|---|---|---:|---:|
+| 0 | (0.417, 0.000, 0.432) | (0.416, 0.084, 0.219) | 0.990 | 0.080 |
+| 20 | (0.372, −0.012, 0.028) | (0.370, −0.012, 0.027) | −0.002 | 0.040 |
+| 30 | (0.365, −0.009, 0.204) | (0.365, −0.016, 0.238) | −0.006 | 0.040 |
+| 40 | (0.479, −0.060, 0.218) | (0.660, −0.119, 0.238) | 0.016 | 0.040 |
+| 60 | (0.652, −0.109, 0.101) | (0.657, −0.102, 0.106) | 0.976 | 0.077 |
+| 69 | (0.653, −0.096, 0.215) | (0.659, −0.102, 0.249) | 0.935 | 0.079 |
+
+At step 20 the predicted opening is slightly negative; the actuator interface
+clips it to zero. Yet measured width stays near 0.04 m because the fingers contact
+the cube. At step 40 the model predicts a target well ahead of the measured TCP;
+the servo advances by at most 0.025 m per interval. At step 60 it opens, and the
+cube rests at Z≈0.028 m: the 0.008 m box floor plus half the 0.04 m cube. That last
+object measurement belongs to the evaluator, not the policy input.
+
+![Predicted commands versus measured motion in the actual learned success](media/vla_success_action_trace.png)
+
+The plot shows why an action target is not an instantaneous robot pose. Dynamics,
+rate limits, contact, and subsequent feedback connect the two. The rollout also
+illustrates a limitation: the first target was imprecise, and success required a
+sequence of later predictions. One successful sequence does not imply reliable
+object selection or recovery on other scenes; the failed videos remain essential.
+
+Regenerate this figure with `scripts/plot_results.py --trace` using the JSON trace
+under `outputs/evaluation_fp32_restored_pilot/traces/position_0000.json`.
+
 ## How does language affect the actions?
 
 Language provides context to the action-generating network. With the same image

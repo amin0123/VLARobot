@@ -11,7 +11,7 @@ from src.evaluation.metrics import summarize
 from src.evaluation.rollout import rollout
 from src.inference.policy import VLAPolicy
 from src.simulation.client import SimulationClient
-from src.tasks import Task, sample_task
+from src.tasks import Task, evaluation_task
 
 
 def save_results(output, rows, checkpoint):
@@ -62,6 +62,7 @@ def main():
     parser.add_argument("--max-steps", type=int)
     parser.add_argument("--seed-start", type=int)
     parser.add_argument("--n-action-steps", type=int)
+    parser.add_argument("--instruction-sampling", choices=("seen", "templates"))
     args = parser.parse_args()
     cfg = config(args.config)
     if args.seed_start is not None:
@@ -69,6 +70,7 @@ def main():
     if args.n_action_steps is not None:
         cfg["n_action_steps"] = args.n_action_steps
     checkpoint = args.checkpoint or cfg["checkpoint"]
+    instruction_sampling = args.instruction_sampling or cfg.get("instruction_sampling", "seen")
     training_config_path = Path(checkpoint, "train_config.json")
     checkpoint_training_root = (
         json.loads(training_config_path.read_text())["dataset"]["root"]
@@ -98,6 +100,8 @@ def main():
             "checkpoint": str(checkpoint),
             "checkpoint_sha256": checkpoint_sha256,
             "training_root": str(training_root),
+            "instruction_sampling": instruction_sampling,
+            "protocol_version": 2,
             "conditions": conditions,
             "episodes_per_condition": episodes,
             "seed_start": cfg["seed_start"],
@@ -114,11 +118,11 @@ def main():
     )
     video_dir = Path(cfg["video_dir"]) / output.name
     train_rows = []
-    if "train_replay" in conditions:
+    if "train_replay" in conditions or instruction_sampling == "seen":
         train_rows = [
             json.loads(line) for line in (training_root / "meta/collection.jsonl").read_text().splitlines()
         ]
-        if episodes > len(train_rows):
+        if "train_replay" in conditions and episodes > len(train_rows):
             raise ValueError("Do not repeat training seeds to inflate the train_replay sample size.")
     policy = VLAPolicy(checkpoint, n_action_steps=cfg["n_action_steps"])
     rows = []
@@ -127,7 +131,7 @@ def main():
             retained_outcomes = set()
             for episode in range(episodes):
                 seed = cfg["seed_start"] + episode  # paired scene seeds across perturbation conditions
-                task = sample_task(episode, seed, condition)
+                task = evaluation_task(episode, seed, condition, train_rows, instruction_sampling)
                 if condition == "train_replay":
                     meta = train_rows[episode]
                     seed = meta["seed"]

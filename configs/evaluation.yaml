@@ -1,6 +1,7 @@
 checkpoint: outputs/train/fp32/checkpoints/last/pretrained_model
 episodes_per_condition: 20
 seed_start: 300000
+instruction_sampling: seen
 conditions:
 - train_replay
 - position

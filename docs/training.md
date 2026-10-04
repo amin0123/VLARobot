@@ -85,6 +85,9 @@ After training, the runner computes held-out flow-matching loss using the saved
 normalizer. Closed-loop simulator success is evaluated separately. `checkpoints`
 under the run directory is a link to the successful attempt; it contains the
 official model, processor files, optimizer/scheduler state, and train configuration.
+That convenient link is created only after the run completes. During training,
+intermediate checkpoints are under `attempt_00_batch_32/checkpoints/` (with the
+actual attempt number and batch size), such as `010000/pretrained_model`.
 
 ## A longer experiment
 
@@ -127,6 +130,12 @@ noise seed fixed. A changed prediction establishes input sensitivity only. These
 counterfactual inputs are outside the training distribution; the experiment does
 not establish correct color recognition or language understanding. Simulator
 rollouts remain the primary task metric.
+
+Use `--sampling episode_start --samples 45` to measure the initial approach across
+all 45 training episodes. An average over an entire demonstration can conceal
+large initial localization errors: once the expert has placed its gripper near
+the cube, its state already carries useful location information. Initial-frame
+diagnostics make that difference visible without giving object poses to the model.
 
 ## Interpreting the numbers
 

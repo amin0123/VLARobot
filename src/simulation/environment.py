@@ -124,11 +124,18 @@ class PickPlaceEnvironment:
         self.initial_configuration = None
 
     def reset(self, seed, task, condition="train", render=True):
-        self.world.reset()
-        configure_drives(self.robot)
         self.task, self.seed, self.condition = task, int(seed), condition
         rng = np.random.default_rng(np.random.SeedSequence([int(seed), 512]))
         scale = float(rng.uniform(0.9, 1.1)) if condition == "scale" else 1.0
+        new_side = self.cfg["cube_size"] * scale
+        if not np.isclose(self.side, new_side, rtol=0, atol=1e-12):
+            # A changed collision scale invalidates active PhysX tensor views.
+            # Author it while stopped; World.reset reinitializes scene handles.
+            self.world.stop()
+            for cube in self.cubes.values():
+                cube.set_local_scale(np.full(3, scale))
+        self.world.reset()
+        configure_drives(self.robot)
         self.side = self.cfg["cube_size"] * scale
         for color, position in sample_layout(self.cfg, seed, scale).items():
             cube = self.cubes[color]

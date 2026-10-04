@@ -82,6 +82,17 @@ share evaluation seeds so comparisons use paired scenes. The `train_replay`
 condition intentionally reuses training scenes and is reported as such; it is a
 memorization diagnostic, not generalization evidence.
 
+The final evaluation uses `instruction_sampling: seen`: position, lighting,
+camera, and scale all use an exact sentence recorded in training for each canonical
+pair. Language evaluation changes to held-out templates on the same paired scenes;
+composition uses the three held-out color pairs. This avoids mixing a new wording
+combination into the position-only result.
+
+The early development pilots sampled familiar templates and could create exact
+sentences absent from the small training split. They are preserved as development
+results. `--instruction-sampling templates` reproduces that earlier sampling
+rule. The final protocol version and selected rule are recorded in `run_config.json`.
+
 ## Scale up
 
 ```bash

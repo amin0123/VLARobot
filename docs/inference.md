@@ -44,6 +44,11 @@ comparisons have paired layouts. SmolVLA's flow-noise generator is also seeded
 per episode; `policy_seed` is recorded alongside the scene seed. `train_replay` intentionally uses training
 episodes and is labeled separately. It measures memorization, not generalization.
 
+Position and visual conditions hold an exact recorded training instruction fixed
+for each task. The language condition substitutes held-out wording. The early
+pilots used common-template sampling; use `--instruction-sampling templates` only
+when reproducing that development protocol. The final suite uses `seen` by default.
+
 The success criterion checks all eight cube corners against the target container's
 interior, a resting height near the floor, low object velocity, open fingers,
 and a withdrawn TCP. It must hold for eight 10-Hz steps. Looking successful in

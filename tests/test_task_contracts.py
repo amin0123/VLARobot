@@ -9,6 +9,7 @@ from src.tasks import (
     TEST_TEMPLATES,
     TRAIN_PAIRS,
     TRAIN_TEMPLATES,
+    evaluation_task,
     sample_task,
     task_from_instruction,
 )
@@ -22,6 +23,29 @@ def test_splits_do_not_leak_compositions_or_phrases():
         assert (task.source, task.destination) in TRAIN_PAIRS
         task = sample_task(i, i, "composition")
         assert (task.source, task.destination) in HELD_OUT_PAIRS
+
+
+def test_position_and_visual_tests_keep_recorded_wording_separate_from_language_test():
+    catalog = [
+        {
+            "source": source,
+            "destination": destination,
+            "instruction": TRAIN_TEMPLATES[0].format(source=source, destination=destination),
+            "template_id": "train_0",
+        }
+        for source, destination in TRAIN_PAIRS
+    ]
+    seen = {row["instruction"] for row in catalog}
+    for index in range(len(TRAIN_PAIRS)):
+        baseline = evaluation_task(index, 300000 + index, "position", catalog)
+        assert baseline.instruction in seen
+        for condition in ("lighting", "camera", "scale"):
+            assert evaluation_task(index, 300000 + index, condition, catalog) == baseline
+        language = evaluation_task(index, 300000 + index, "language", catalog)
+        assert (language.source, language.destination) == (baseline.source, baseline.destination)
+        assert language.instruction not in seen
+    with pytest.raises(ValueError, match="No training instruction"):
+        evaluation_task(0, 300000, "position", [])
 
 
 def test_reset_geometry_many_seeds():

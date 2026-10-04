@@ -49,6 +49,10 @@ computed from joint measurements and the known robot model; it contains no cube
 or container position. On hardware, encoders and calibrated forward kinematics
 would provide the same information.
 
+Roll is represented continuously around the downward value π: a negative Euler
+roll is shifted by 2π. This avoids a ±π wrap discontinuity in otherwise similar
+robot states. The V1 orientation remains in a narrow downward-facing range.
+
 The policy boundary in `src/inference/policy.py` explicitly constructs a new
 dictionary containing only the two observation fields and instruction. Extra
 environment metadata cannot enter the model simply by being present elsewhere.

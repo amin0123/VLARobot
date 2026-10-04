@@ -331,7 +331,48 @@ not add demonstrations or claim to fix the dataset's coverage limitations.
 Final evaluation will use fresh seeds beginning at 300000. Development pilots
 and the known-success demonstration are excluded from the unseen-test estimate.
 
+An offline diagnostic on all **45 training episode starts** measured mean first
+action XYZ error of **6.12 cm** for the 3,000-step FP32 model and **2.24 cm** for
+the full run's saved 10,000-step checkpoint. These samples emphasize initial
+localization rather than already-aligned expert states. They show improved
+training-scene action prediction, not an unseen-scene success rate. Exact samples
+and counterfactual-input diagnostics are in `outputs/action_diagnostics_*_starts.json`.
+
 ## Outstanding runtime gates
+
+The six-condition scene integration check passed position, language, composition,
+lighting, and camera with the scripted teacher. Scale reset failed: changing a
+collision shape while PhysX tensor views were active invalidated the simulation
+view, and the next pose update raised `Failed to get rigid body transforms from
+backend`. This is a reset/API problem, not a learned-policy failure.
+
+Selected fix: stop physics before changing cube scale, then call the official
+`World.reset()` to rebuild the scene's physics views before setting episode poses.
+Recreating the whole simulator process per scale episode would also isolate the
+problem but is unnecessarily slow. Baseline resets retain their existing control
+sequence. The scene check, synchronization check, and 100-episode teacher gate
+must be repeated after this change. Earlier validation artifacts are preserved.
+Reference: [Isaac 6.0 prim initialization/reset](https://docs.isaacsim.omniverse.nvidia.com/6.0.0/py/source/deprecated/isaacsim.core.prims/docs/index.html).
+
+The corrected implementation passed **10/10 teacher scene checks**, including
+three different scales and returns to the baseline geometry. Initial settled
+heights match the requested collision sizes. The synchronization check again
+measured **0.0** robot-state drift from capture and **0.0** maximum state difference
+when replaying actions with versus without rendering.
+
+A fresh baseline teacher validation then achieved **100/100** successes, with
+the same per-seed episode lengths as the earlier run. Its current gate fingerprint
+is `c7debd92059a49543db65df7e22e866f324dc4c3a620093e3c0b78fcf359462e`.
+Original results are retained under `outputs/expert_before_scale_fix/`, and the
+new collector gate is under `outputs/expert/`. No recollection is needed for the
+existing baseline dataset; its unscaled control behavior was retained and checked.
+
+The scene checker also measured nonzero raw RGB differences after same-seed
+resets without a visual perturbation (about 1.45 pixel-intensity levels on average).
+This reinforces the limitation that scene/noise seeds do not make RTX rendering
+bit-identical. Camera perturbation produced a much larger difference (about 11.1).
+These image differences are diagnostics, not proof of the cause of any policy
+failure. All actual initial/final images remain under `outputs/checks/`.
 
 The 20,000-step run and final generalization evaluation are pending.
 
