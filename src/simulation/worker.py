@@ -31,6 +31,7 @@ def main():
             "window_height": 800,
             "renderer": "RaytracedLighting",
             "multi_gpu": False,
+            "disable_viewport_updates": not args.gui,
             "limit_cpu_threads": 8,
             "extra_args": [
                 "--ext-folder",
@@ -39,6 +40,7 @@ def main():
                 isaac_path + "/extsDeprecated",
                 "--/log/level=warning",
                 "--/log/outputStreamLevel=warning",
+                "--/exts/omni.kit.renderer.core/present/enabled=false",
             ],
         },
         experience=str(ROOT / "configs/vlarobot.kit"),

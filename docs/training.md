@@ -75,7 +75,7 @@ official model, processor files, optimizer/scheduler state, and train configurat
 After the sanity run passes and its videos have been assessed:
 
 ```bash
-./scripts/train.sh --steps 3000 --output outputs/train/longer
+./scripts/train.sh --config training_longer
 ./scripts/evaluate.sh \
   --checkpoint outputs/train/longer/checkpoints/last/pretrained_model \
   --output outputs/evaluation_longer

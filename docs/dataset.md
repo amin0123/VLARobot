@@ -75,7 +75,8 @@ of a tiny paraphrased dataset, so V1 uses explicit split indices instead. Traini
 normalization comes only from the train dataset. Validation uses the checkpoint's
 saved training normalizer, not validation-derived statistics.
 
-Evaluation seeds begin at 100000, independently of collection seeds beginning at
+Final test seeds begin at 300000, independently of development rollout seeds
+100000–100002 and collection seeds beginning at
 1000 and expert validation seeds beginning at 10000. Visual perturbation conditions
 share evaluation seeds so comparisons use paired scenes. The `train_replay`
 condition intentionally reuses training scenes and is reported as such; it is a

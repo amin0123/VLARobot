@@ -111,3 +111,21 @@ the user clarified that Isaac Sim is already installed. The project now reuses
 or ROS. NumPy/packaging conflicts between current pip Isaac Sim and LeRobot
 still motivate separate interpreters; the existing simulator supplies its own.
 See `environment.md` for the decision and `experiments.md` for executed milestones.
+
+## Milestone evidence
+
+| Milestone | Current evidence |
+|---|---|
+| Isolated learning environment | CUDA computation, TorchCodec import, `pip check`; existing Isaac/ROS reused |
+| Robot and randomized scene | Real RGB render and synchronized-state integration check |
+| Reliable scripted expert | 100/100 randomized physical successes |
+| LeRobot demonstrations | 50 episodes, 3,914 frames, v3.0 MP4/Parquet |
+| Dataset visualization | Episodes 0, 17, 33 decoded and visually reviewed |
+| SmolVLA smoke test | CUDA output [1, 50, 7], 78.9 ms warm inference |
+| Sanity fine-tune | 300 official trainer steps; checkpoints and validation loss recorded |
+| Longer fine-tune | 3,000 steps/batch 32 completed; checkpoints and held-out loss saved |
+| Closed-loop VLA | Six real sanity rollouts completed; zero successes, failures retained |
+| Generalization suite | Pilot exercised train replay/position; full evaluation still pending |
+| Educational documentation | Pipeline guides written; final empirical results pending |
+
+Exact measurements, failed attempts, and artifact paths are in `experiments.md`.

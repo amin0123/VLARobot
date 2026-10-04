@@ -75,3 +75,15 @@ small sample with zero successes still has a nonzero upper confidence bound.
 The native viewer and video are for inspection. Simulator time is advanced at
 10 action intervals per simulated second; wall-clock latency can be slower or
 faster and is recorded separately.
+
+## Inspecting measured artifacts
+
+```bash
+python -m src.evaluation.analyze_failures --root outputs/evaluation
+python scripts/plot_results.py --training outputs/train/sanity outputs/train/longer \
+  --evaluation outputs/evaluation
+```
+
+The analysis tool counts recorded failure labels, reports measured target lift
+and approach distance, and extracts temporal contact sheets from real videos.
+The plotting tool uses saved loss samples and evaluation counts only.

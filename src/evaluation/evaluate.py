@@ -16,7 +16,8 @@ from src.tasks import Task, sample_task
 def save_results(output, rows, checkpoint):
     # Persist after every episode, including failures; interrupted jobs retain evidence.
     output.mkdir(parents=True, exist_ok=True)
-    with (output / "results.csv").open("w", newline="") as stream:
+    temporary = output / "results.csv.tmp"
+    with temporary.open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         for row in rows:
@@ -26,6 +27,8 @@ def save_results(output, rows, checkpoint):
                     "initial_configuration": json.dumps(row["initial_configuration"], default=json_default),
                 }
             )
+    temporary.replace(output / "results.csv")
+    write_json(output / "results.json", rows)
     groups = {
         condition: summarize([r for r in rows if r["condition"] == condition])
         for condition in dict.fromkeys(r["condition"] for r in rows)
@@ -53,8 +56,14 @@ def main():
     parser.add_argument("--gui", action="store_true")
     parser.add_argument("--videos", type=int)
     parser.add_argument("--max-steps", type=int)
+    parser.add_argument("--seed-start", type=int)
+    parser.add_argument("--n-action-steps", type=int)
     args = parser.parse_args()
     cfg = config(args.config)
+    if args.seed_start is not None:
+        cfg["seed_start"] = args.seed_start
+    if args.n_action_steps is not None:
+        cfg["n_action_steps"] = args.n_action_steps
     checkpoint = args.checkpoint or cfg["checkpoint"]
     output = args.output or Path(cfg["output_dir"])
     if (output / "results.csv").exists():
@@ -94,7 +103,11 @@ def main():
                     )
                 # Capture candidates so the first success and first failure can
                 # be retained even when they occur after the initial examples.
-                video = video_dir / f"{condition}_{episode:04d}.mp4" if videos else None
+                video = (
+                    video_dir / f"{condition}_{episode:04d}.mp4"
+                    if videos and (episode < videos or len(retained_outcomes) < 2)
+                    else None
+                )
                 row, trace = rollout(
                     sim,
                     policy,

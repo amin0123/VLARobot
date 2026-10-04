@@ -89,7 +89,7 @@ python -m src.control.validate_expert --episodes 100
 python -m src.dataset.inspect
 python -m src.dataset.visualize --episode 0 --play
 python -m src.dataset.visualize --episode 17
-python -m src.dataset.visualize --episode 42
+python -m src.dataset.visualize --episode 33
 python -m src.dataset.split
 ```
 
@@ -142,7 +142,7 @@ checkpoint files, and held-out validation loss stay local. W&B is disabled.
 After the sanity run and physical evaluation:
 
 ```bash
-./scripts/train.sh --steps 3000 --output outputs/train/longer
+./scripts/train.sh --config training_longer
 ```
 
 See [training details](docs/training.md) for freezing, flow matching, normalization,
@@ -192,7 +192,7 @@ No learned success rate has been asserted before completing the corresponding ru
 | ROS Python/plugin imports inside Conda | Reactivate the environment after setup; its `PYTHONPATH` is isolated. No ROS reinstall is needed. |
 | CUDA unavailable / unsupported architecture | Run `scripts/check_environment.py`; use the pinned CUDA 12.8 PyTorch build for this Blackwell GPU. |
 | First Isaac startup is slow | Inspect `outputs/logs/simulation.log`; extension loading, asset downloads, and shader compilation can take time. |
-| Isaac exits before connecting | Read its log; verify both environments and the `.kit` dependencies. Set `VLAROBOT_SIM_PYTHON` for a custom interpreter. |
+| Isaac exits before connecting | Read its log; verify the existing Isaac launcher, `vlarobot`, and the `.kit` dependencies. Set `VLAROBOT_SIM_PYTHON` for a custom interpreter. |
 | Asset service unavailable | Set `VLAROBOT_FRANKA_USD` to a complete local Panda asset tree. |
 | Empty camera image | Check synchronous rendering and camera placement; do not train on blank observations. |
 | Expert gate refuses collection | Re-run validation after physics/control edits; inspect failed expert traces/videos. |

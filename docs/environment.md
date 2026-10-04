@@ -32,6 +32,7 @@ Inspected 2026-10-04, before installation.
 | FFmpeg | 7.1.1, conda-forge |
 | Existing Isaac Sim | `6.0.0-rc.59+release.41464.5f2772bc.gl`, `/home/amin24/isaacsim` |
 | Isaac bundled Python | 3.12.13, `/home/amin24/isaacsim/python.sh` |
+| Isaac bundle NumPy / SciPy / PyYAML | 2.3.1 / 1.17.0 / 6.0.3 |
 | SmolVLA checkpoint | `lerobot/smolvla_base`, revision `d9f33c94a60fb382c90dea2164c96845bd955e28` |
 | Tokenizer/backbone config | `HuggingFaceTB/SmolVLM2-500M-Video-Instruct`, revision `7b375e1b73b11138ff12fe22c8f2822d8fe03467` |
 

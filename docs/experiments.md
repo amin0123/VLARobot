@@ -160,7 +160,41 @@ Held-out flow-matching loss on 64 fixed-seed validation samples was
 checkpoint, processors, and training normalization loaded successfully in the
 validation application. Artifacts: `outputs/train/sanity/`.
 
+## Sanity closed-loop policy baseline
+
+The saved 300-step policy completed six real simulator rollouts using only RGB,
+language, and robot state: **0/3 train replay** and **0/3 unseen positions**.
+Each condition's Wilson 95% interval is **0%–56.1%**; three episodes are a debugging
+sample, not a precise performance estimate. All trials hit the 240-step limit.
+
+Manual review of `train_replay_0000` shows the gripper approaching incorrect
+positions, cycling through motion near the containers, and never lifting the
+target red cube. The target stayed at its initial location. Logged inference
+time totaled about 4.5–4.8 s within each approximately 32 s rollout. These failures
+show why decreasing imitation loss is insufficient evidence of physical success.
+Actual videos and traces are under `outputs/evaluation_sanity/` and
+`outputs/videos/evaluation_sanity/`.
+
+The next configured experiment uses 3,000 steps with batch size 32 (96,000 sampled
+training frames, approximately 27 dataset passes), compared with 2,400 sampled
+frames in the sanity run. This compares training budgets, not only step count.
+Development rollouts use seeds 100000–100002; the final test begins at 300000,
+so tuning decisions from the pilot do not reuse the final unseen scenes. All
+pilot outcomes are retained.
+
+## 3,000-step fine-tune — completed
+
+The configured longer run completed **3,000 steps at batch size 32**, without
+an OOM retry, in **385.7 s** including startup and checkpoint writes. It processed
+96,000 sampled frames (27.23 dataset passes). Logged loss decreased from **1.455**
+to **0.026**; held-out flow-matching loss was **0.0455** on the same 64 fixed-seed
+validation samples used for the sanity run. Checkpoints are saved at steps
+1,000, 2,000, and 3,000 under `outputs/train/longer/`.
+
+GPU training allocation reported approximately 3.9 GiB inside the trainer;
+`nvidia-smi` observed about 5.4 GiB including runtime/desktop usage. The OOM retry
+path was implemented but was not triggered by either completed run.
+
 ## Outstanding runtime gates
 
-Sanity closed-loop rollouts, longer fine-tuning, and the full generalization
-evaluation are not yet recorded here. No VLA task success rate is asserted yet.
+Longer-policy development rollouts and final generalization evaluation are pending.
