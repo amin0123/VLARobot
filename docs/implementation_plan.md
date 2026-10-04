@@ -1,7 +1,7 @@
 # Implementation plan
 
-Started 2026-10-04. This is a living record; measured results will be linked as
-milestones finish. An implemented feature is not considered validated until run.
+Started 2026-10-04 and updated through the completed runtime milestones below.
+An implemented feature is not considered validated until run.
 
 ## Architecture and scope
 
@@ -23,24 +23,25 @@ flowchart LR
   R --> S
 ```
 
-## Proposed implementation choices
+## Implementation choices
 
-- Environment: dedicated Conda environment named `vlarobot`; leave system Python
-  and existing environments alone. Inspect dependency constraints before pinning.
+- Learning libraries: dedicated Conda environment named `vlarobot`; leave system
+  Python and existing environments alone. Isaac uses its existing bundled Python.
 - Simulator: the existing standalone Isaac Sim installation, checked against current
   NVIDIA documentation and LeRobot dependencies. Use CPU PhysX for this single
   scene if it improves reproducibility; RTX rendering supplies the RGB image.
 - Robot: NVIDIA's Franka Panda USD asset. Articulated joints and contact physics,
   with real grasping rather than attaching/teleporting objects during control.
-- Proposed action: 7D Cartesian incremental pose plus gripper, converted to
-  joint targets through deterministic IK. If a tested Isaac controller makes
-  joint position targets more reliable, select 7 arm targets + gripper instead
-  and document that decision before collection. The VLA still predicts actions.
-- Observation: RGB, measured robot joint/gripper state (and measured end-effector
-  pose if Cartesian control is selected), and the instruction. Object poses and
-  canonical task IDs are excluded from the policy input.
-- Timing: aim for 10 Hz policy/control observations and 120 Hz physics, with
-  explicit timestamps and documented units. Begin with a 256x256 camera.
+- Action selected before collection: seven values for absolute TCP XYZ/RPY and
+  gripper opening, converted to joint targets by deterministic IK. The initial
+  proposal considered incremental poses; absolute targets were selected for
+  direct inspection and to avoid accumulating noisy deltas. See `architecture.md`
+  for units, clipping, and the exact implementation contract.
+- Observation: one RGB image, 14 measured state values (TCP XYZ/RPY, total gripper
+  width, and seven arm angles), and the instruction. Object poses and canonical
+  task IDs are excluded from the policy input.
+- Timing: 10 Hz action/observation interface and 120 Hz physics, with explicit
+  timestamps and documented units. The camera captures 256×256 RGB.
 - LeRobot: use the current official `LeRobotDataset` API and official SmolVLA
   preprocessing/training utilities. Pin the tested release or commit. Dataset
   frames contain the observation **before** the recorded action is executed.
@@ -103,8 +104,9 @@ flowchart LR
 
 ## Status
 
-Machine inspection, the isolated `vlarobot` Python environment, CUDA computation,
-and a pretrained SmolVLA weight load are verified. The initial implementation
+The full pipeline, 20,000-step training, 140-episode evaluation, and educational
+documentation are complete; new-scene policy reliability is poor and reported
+explicitly. The initial implementation
 mistakenly began a second pip installation of Isaac Sim; this was stopped after
 the user clarified that Isaac Sim is already installed. The project now reuses
 `/home/amin24/isaacsim/python.sh` (6.0.0-rc.59) and does not install a simulator
