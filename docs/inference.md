@@ -12,13 +12,16 @@ trainer. If the repository/dataset has moved, pass `--training-root` explicitly.
 ```bash
 python -m src.inference.run_policy \
   --instruction "Put the green cube in the red box." \
-  --checkpoint outputs/train/fp32/checkpoints/last/pretrained_model
+  --checkpoint outputs/train/full/checkpoints/last/pretrained_model
 ```
 
 This launches the native Isaac viewport and an episode-status panel. `--headless`
 disables the window while retaining RGB rendering. A recording and trace are
 written under `outputs/videos/`. Recordings include instruction, step, and outcome
 outside the policy image. Overlay text is never sent to SmolVLA.
+Default recording names include a UTC timestamp so repeated interactive trials
+retain their outcomes. An explicit `--video` path must not already contain a
+recording or its companion JSON trace.
 
 The input allow-list supplies one RGB image, 14 measured state values, and the
 original instruction. The official processor and action queue are loaded from
@@ -86,6 +89,16 @@ episodes within a condition. Conditions are paired, so their results are correla
 Comparing checkpoints formally calls for paired statistics and more seeds. A
 small sample with zero successes still has a nonzero upper confidence bound.
 
+The language condition changes wording on the same unseen-position scenes; it
+does not hold the scene to a memorized training layout. Compare it to `position`,
+not only to `train_replay`. When the position baseline has zero successes, an
+additional failed language or visual condition cannot quantify a further loss
+of reliability. This floor effect prevents claims that lighting, wording, or
+camera placement is irrelevant simply because several rows share a 0% score.
+The composition condition also changes the source-color distribution: its three
+held-out pairs contain no red source. Treat its score as performance on those
+pairs, not a perfectly isolated estimate of compositional reasoning.
+
 The native viewer and video are for inspection. Simulator time is advanced at
 10 action intervals per simulated second; wall-clock latency can be slower or
 faster and is recorded separately.
@@ -100,4 +113,10 @@ python scripts/plot_results.py --training outputs/train/sanity outputs/train/lon
 
 The analysis tool counts recorded failure labels, reports measured target lift
 and approach distance, and extracts temporal contact sheets from real videos.
+It also compares each first predicted XY target to the actual initial target
+cube's XY position. Our teacher initially approaches directly above that cube,
+so this measures disagreement with that initial behavior. It is a post-hoc
+diagnostic using evaluator telemetry, not an input to the policy or a substitute
+for physical success. A policy could choose an intermediate waypoint and still
+succeed, so interpret this quantity alongside the complete motion.
 The plotting tool uses saved loss samples and evaluation counts only.

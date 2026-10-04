@@ -368,6 +368,14 @@ never demonstrate recovery. Dataset imbalance can make one color dominate.
 Normalization/frame mistakes can turn a good normalized prediction into a bad
 physical command.
 
+Our 256×256 view makes cubes small relative to the entire arm and table. A frozen
+vision encoder may provide features that support memorizing a few scenes without
+precise localization at new positions. That is a possible contributor to study,
+not a demonstrated cause. A controlled follow-up would increase actual camera
+resolution or tighten framing, recollect data, and compare fresh evaluation
+seeds. Upsampling existing 256-pixel recordings to 512 pixels does not create
+new visual detail; that earlier experiment is reported separately.
+
 Inspect failure videos and actions together. First rule out software contract
 errors (channel ordering, metres/radians, action timing, checkpoint statistics).
 Then ask whether the dataset covers what the policy experienced. Do not infer

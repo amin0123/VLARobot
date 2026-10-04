@@ -59,16 +59,31 @@ def main():
                 "episode": int(row["episode"]),
                 "success": row["success"] == "True",
                 "failure_category": row["failure_category"],
+                # Our teacher's initial approach target is directly above the
+                # cube. This is a post-hoc BC diagnostic, never a policy input.
+                "initial_action_xy_error_m": float(
+                    np.linalg.norm(np.asarray(data["actions"][0])[:2] - positions[0, :2])
+                ),
                 "nearest_tcp_to_target_m": float(np.linalg.norm(tcp - positions, axis=1).min()),
                 "target_max_lift_m": float(positions[:, 2].max() - positions[0, 2]),
                 "target_final_displacement_m": float(np.linalg.norm(positions[-1] - positions[0])),
                 "tcp_path_length_m": float(np.linalg.norm(np.diff(tcp, axis=0), axis=1).sum()),
             }
         )
+    initial_action_by_condition = {}
+    for condition in dict.fromkeys(row["condition"] for row in summaries):
+        values = [r["initial_action_xy_error_m"] for r in summaries if r["condition"] == condition]
+        initial_action_by_condition[condition] = {
+            "episodes": len(values),
+            "mean_xy_error_m": float(np.mean(values)),
+            "median_xy_error_m": float(np.median(values)),
+        }
     write_json(
         args.root / "failure_analysis.json",
         {
+            "episodes": len(rows),
             "failure_counts": dict(counts),
+            "initial_action_by_condition": initial_action_by_condition,
             "episode_diagnostics": summaries,
             "interpretation": "Observable outcome heuristics; these do not prove language misunderstanding or collision causes.",
         },

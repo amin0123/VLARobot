@@ -167,7 +167,7 @@ optimizer state.
 ```bash
 python -m src.inference.run_policy \
   --instruction "Put the green cube in the red box." \
-  --checkpoint outputs/train/fp32/checkpoints/last/pretrained_model
+  --checkpoint outputs/train/full/checkpoints/last/pretrained_model
 ```
 
 Use `--headless` for recording without a window, `--seed` for reproducible scenes,

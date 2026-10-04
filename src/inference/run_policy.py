@@ -1,6 +1,7 @@
 """Run a natural-language command through the learned policy in closed loop."""
 
 import argparse
+from datetime import datetime, timezone
 from pathlib import Path
 
 from src.common import config, write_json
@@ -21,8 +22,13 @@ def main():
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--seed", type=int, default=200000)
     parser.add_argument("--n-action-steps", type=int, default=5)
-    parser.add_argument("--video", type=Path, default=Path("outputs/videos/interactive.mp4"))
+    parser.add_argument("--video", type=Path, help="Recording path; defaults to a unique UTC timestamp")
     args = parser.parse_args()
+    if args.video is None:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+        args.video = Path("outputs/videos") / f"interactive_{stamp}.mp4"
+    if args.video.exists() or args.video.with_suffix(".json").exists():
+        raise FileExistsError(f"Recording already exists at {args.video}; choose a new --video path.")
     task = task_from_instruction(args.instruction, args.source, args.destination)
     policy = VLAPolicy(args.checkpoint, n_action_steps=args.n_action_steps)
     with SimulationClient(gui=not args.headless) as sim:
