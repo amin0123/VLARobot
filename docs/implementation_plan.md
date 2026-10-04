@@ -27,7 +27,7 @@ flowchart LR
 
 - Environment: dedicated Conda environment named `vlarobot`; leave system Python
   and existing environments alone. Inspect dependency constraints before pinning.
-- Simulator: a supported pip Isaac Sim release, selected after checking current
+- Simulator: the existing standalone Isaac Sim installation, checked against current
   NVIDIA documentation and LeRobot dependencies. Use CPU PhysX for this single
   scene if it improves reproducibility; RTX rendering supplies the RGB image.
 - Robot: NVIDIA's Franka Panda USD asset. Articulated joints and contact physics,
@@ -103,8 +103,11 @@ flowchart LR
 
 ## Status
 
-Machine inspection complete. Dependency selection found NumPy/packaging conflicts
-between current Isaac Sim 6.1.0.0 and LeRobot 0.6.1. Selected two Python 3.12 Conda
-environments (`vlarobot`, `vlarobot-sim`) and a local observation/action subprocess
-bridge. See `environment.md` for the alternatives and decision. Installation is
-in progress; no simulator, expert, model, or training result claimed yet.
+Machine inspection, the isolated `vlarobot` Python environment, CUDA computation,
+and a pretrained SmolVLA weight load are verified. The initial implementation
+mistakenly began a second pip installation of Isaac Sim; this was stopped after
+the user clarified that Isaac Sim is already installed. The project now reuses
+`/home/amin24/isaacsim/python.sh` (6.0.0-rc.59) and does not install a simulator
+or ROS. NumPy/packaging conflicts between current pip Isaac Sim and LeRobot
+still motivate separate interpreters; the existing simulator supplies its own.
+See `environment.md` for the decision and `experiments.md` for executed milestones.

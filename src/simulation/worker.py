@@ -15,8 +15,7 @@ def main():
     parser.add_argument("--gui", action="store_true")
     parser.add_argument("--config", default="environment")
     args = parser.parse_args()
-    # The setup script obtains Isaac Sim under its normal license terms. NVIDIA
-    # requires this variable for noninteractive launches of the installed runtime.
+    # Reuse the user's existing standalone runtime and its bundled interpreter.
     os.environ.setdefault("OMNI_KIT_ACCEPT_EULA", "YES")
     from isaacsim import SimulationApp
 

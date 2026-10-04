@@ -12,6 +12,7 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.common import write_json
+from src.simulation.runtime import simulator_python
 
 
 def main():
@@ -38,6 +39,13 @@ def main():
         "nvidia_smi": subprocess.check_output(
             ["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv"], text=True
         ),
+    }
+    sim_python = simulator_python()
+    version_file = sim_python.parent / "VERSION"
+    report["simulator"] = {
+        "launcher": str(sim_python),
+        "version": version_file.read_text().strip() if version_file.exists() else "unrecorded",
+        "installation": "existing standalone runtime; not installed by this project",
     }
     write_json(ROOT / "outputs/environment.json", report)
     print(json.dumps(report, indent=2))

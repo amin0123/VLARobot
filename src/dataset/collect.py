@@ -72,7 +72,7 @@ def main():
     writer_kwargs = {
         "repo_id": cfg["repo_id"],
         "root": root,
-        "rgb_encoder": RGBEncoderConfig(vcodec="libx264", pix_fmt="yuv420p", crf=18),
+        "rgb_encoder": RGBEncoderConfig(vcodec="h264", pix_fmt="yuv420p", crf=18),
         "image_writer_threads": 4,
         "encoder_threads": 2,
     }

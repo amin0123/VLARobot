@@ -8,10 +8,12 @@ from multiprocessing.connection import Listener
 from pathlib import Path
 
 from src.common import ROOT
+from src.simulation.runtime import simulator_python
 
 
 class SimulationClient:
     def __init__(self, gui=False, cfg="environment", log_path=None, startup_timeout=600):
+        command = [str(simulator_python())]
         self.directory = tempfile.TemporaryDirectory(prefix="vlarobot-")
         self.socket_path = str(Path(self.directory.name) / "sim.sock")
         self.listener = Listener(self.socket_path, family="AF_UNIX")
@@ -20,16 +22,18 @@ class SimulationClient:
         self.log_path = Path(log_path or ROOT / "outputs/logs/simulation.log")
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self.log = self.log_path.open("w")
-        explicit = os.environ.get("VLAROBOT_SIM_PYTHON")
-        if explicit:
-            command = [explicit]
-        else:
-            command = ["conda", "run", "--no-capture-output", "-n", "vlarobot-sim", "python"]
         command += ["-u", "-m", "src.simulation.worker", "--socket", self.socket_path, "--config", str(cfg)]
         if gui:
             command.append("--gui")
         child_env = os.environ.copy()
-        for name in ("PYTHONPATH", "PYTHONHOME", "LD_LIBRARY_PATH"):
+        for name in (
+            "PYTHONPATH",
+            "PYTHONHOME",
+            "PYTHONEXE",
+            "LD_LIBRARY_PATH",
+            "LD_PRELOAD",
+            "CONDA_PREFIX",
+        ):
             child_env.pop(name, None)
         child_env["PYTHONUNBUFFERED"] = "1"
         self.process = subprocess.Popen(
