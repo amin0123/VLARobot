@@ -401,4 +401,16 @@ only after the physical rollouts complete.
 
 `setup.sh` was re-run successfully after switching to the tested package lock.
 It reused the existing simulator, passed dependency/CUDA checks, and did not
-install Isaac Sim or ROS. All eleven unit/API/regression tests pass.
+install Isaac Sim or ROS. All eleven tests passed at that milestone.
+
+## Dataset append provenance
+
+Review found that collection resume checked episode counts but could overwrite
+the original project metadata after scene/controller changes. The collector now
+validates its physical and feature contracts before opening the writer, checks
+sequential episode indices and unique seeds, and preserves original provenance.
+The official LeRobot create/read/append/read round trip passed with a temporary
+synthetic API fixture; four incompatible-provenance regression cases also passed.
+An actual CLI attempt to append to the earlier 50-episode dataset was correctly
+rejected across the controller revision, with all metadata hashes unchanged.
+No additional data was added to the training or validation split.

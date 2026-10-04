@@ -48,6 +48,41 @@ def validate_expert_gate(path, cfg):
     return gate
 
 
+def validate_resume(root, env_cfg, cfg, gate):
+    """Check local provenance before opening an append writer or changing metadata."""
+    root = Path(root)
+    required = [root / "meta" / name for name in ("project.json", "info.json", "collection.jsonl")]
+    if any(not path.is_file() for path in required):
+        raise ValueError("Resume requires an existing local project dataset with complete sidecar metadata.")
+    project, info = [json.loads(path.read_text()) for path in required[:2]]
+    previous = [json.loads(line) for line in required[2].read_text().splitlines()]
+    expected = {
+        "environment": env_cfg,
+        "action_names": ACTION_NAMES,
+        "state_names": STATE_NAMES,
+        "split": cfg["split"],
+    }
+    changed = [name for name, value in expected.items() if project.get(name) != value]
+    if project.get("expert_gate", {}).get("expert_fingerprint") != gate["expert_fingerprint"]:
+        changed.append("environment/controller fingerprint")
+    if info["fps"] != env_cfg["control_hz"] or info["robot_type"] != "franka_panda_cartesian":
+        changed.append("FPS/robot type")
+    expected_features = json.loads(json.dumps(features(env_cfg["image_size"])))
+    for name, spec in expected_features.items():
+        stored = info["features"].get(name, {})
+        if any(stored.get(key) != value for key, value in spec.items()):
+            changed.append(f"feature {name}")
+    if changed:
+        raise ValueError(f"Cannot mix changed {', '.join(changed)} into this dataset. Select a new --root.")
+    if (
+        len(previous) != info["total_episodes"]
+        or [row["episode_index"] for row in previous] != list(range(len(previous)))
+        or len({row["seed"] for row in previous}) != len(previous)
+    ):
+        raise ValueError("Collection sidecar is inconsistent; inspect the interrupted write before resuming.")
+    return previous
+
+
 def main():
     from lerobot.configs.video import RGBEncoderConfig
     from lerobot.datasets import LeRobotDataset
@@ -61,7 +96,7 @@ def main():
     parser.add_argument("--gui", action="store_true")
     args = parser.parse_args()
     cfg, env_cfg = config(args.config), config()
-    episodes = args.episodes or cfg["episodes"]
+    episodes = args.episodes if args.episodes is not None else cfg["episodes"]
     root = args.root or Path(cfg["root"])
     seed_start = args.seed_start if args.seed_start is not None else cfg["seed_start"]
     gate = validate_expert_gate(cfg["expert_gate"], cfg)
@@ -69,6 +104,10 @@ def main():
         raise ValueError("episodes must be positive")
     if root.exists() and not args.resume:
         raise FileExistsError(f"{root} exists. Select a new --root or use --resume.")
+    previous = validate_resume(root, env_cfg, cfg, gate) if args.resume else []
+    if args.resume and len(previous) >= episodes:
+        print(f"Dataset already contains {len(previous)} episodes; requested total is {episodes}.")
+        return
     writer_kwargs = {
         "repo_id": cfg["repo_id"],
         "root": root,
@@ -86,31 +125,28 @@ def main():
             **writer_kwargs,
         )
     metadata_path = root / "meta/collection.jsonl"
-    previous = (
-        [json.loads(line) for line in metadata_path.read_text().splitlines()]
-        if metadata_path.exists()
-        else []
-    )
     if len(previous) != dataset.num_episodes:
+        dataset.finalize()
         raise RuntimeError(
             "Collection sidecar differs from dataset episode count; inspect the interrupted write before resuming."
         )
     used_seeds = {r["seed"] for r in previous}
     completed = dataset.num_episodes
     started = time.monotonic()
-    write_json(
-        root / "meta/project.json",
-        {
-            "environment": env_cfg,
-            "collection_config": cfg,
-            "expert_gate": gate,
-            "observation_timing": "observation before action",
-            "action_names": ACTION_NAMES,
-            "state_names": STATE_NAMES,
-            "seed_start": seed_start,
-            "split": cfg["split"],
-        },
-    )
+    if not args.resume:
+        write_json(
+            root / "meta/project.json",
+            {
+                "environment": env_cfg,
+                "collection_config": cfg,
+                "expert_gate": gate,
+                "observation_timing": "observation before action",
+                "action_names": ACTION_NAMES,
+                "state_names": STATE_NAMES,
+                "seed_start": seed_start,
+                "split": cfg["split"],
+            },
+        )
     try:
         with SimulationClient(gui=args.gui, log_path=root / "simulation.log") as sim:
             with metadata_path.open("a") as metadata:

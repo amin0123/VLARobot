@@ -103,7 +103,20 @@ rule. The final protocol version and selected rule are recorded in `run_config.j
 ```
 
 Choose a new root to preserve earlier experiments. `--resume` appends to an
-existing collection, checks metadata alignment, and skips accepted seeds. Review
+existing collection, checks metadata alignment, and skips accepted seeds. The
+requested episode count is the desired total, not the number to append. Before
+opening the writer it checks scene configuration, controller fingerprint,
+state/action schema, FPS, robot type, split, episode indices, and unique seeds.
+It preserves the original project metadata and returns without launching Isaac
+when the compatible dataset already has enough episodes.
+
+Appending after a controller/physics revision requires a new root. This is
+deliberately stricter than deciding whether an old dataset is still useful for
+training: the original 50-episode dataset remains valid after the verified scale
+reset fix, but its historical controller fingerprint is retained rather than
+rewritten to permit mixed provenance.
+
+Review
 language/task balance and episode videos before increasing training time. Fifty
 episodes spread over nine tasks and five phrases are a deliberately small
 baseline, not a large multi-task dataset.

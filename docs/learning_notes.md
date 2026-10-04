@@ -260,6 +260,31 @@ object selection or recovery on other scenes; the failed videos remain essential
 Regenerate this figure with `scripts/plot_results.py --trace` using the JSON trace
 under `outputs/evaluation_fp32_restored_pilot/traces/position_0000.json`.
 
+### Compare a missed grasp after more training
+
+The 20,000-step model failed training-scene replay episode 0, “Put the red cube
+in the green box.” Its closest TCP-to-cube distance was **2.82 cm** and the red
+cube rose only **2.3 mm**. The gripper nevertheless continued toward the green
+container; at timeout its TCP was around `(0.657, −0.089, 0.239)` while the red
+cube remained on the table. This is observable failure to acquire and recover
+the target, not evidence that the model misunderstood the word “green.”
+
+![Actual full-model missed grasp and empty transport](media/vla_full_grasp_failure.jpg)
+
+Episode 1, “Place the red block inside the blue container,” succeeded in 99
+steps. The target rose **21.3 cm** and settled at `(0.668, 0.086, 0.028)` inside
+the blue box. Both scenes came from training, so this comparison teaches contact
+and recovery behavior; it does not establish unseen-position generalization.
+
+![Actual full-model training-scene success](media/vla_full_train_success.jpg)
+
+For an exercise, open the two `train_replay_0000/0001.json` traces under
+`outputs/evaluation/traces/`. Plot commanded and measured gripper opening
+alongside TCP motion. Identify the earliest evidence that the first grasp missed.
+Then ask which successful demonstration contains the corresponding recovery
+behavior. Our dataset contains no deliberate failed-grasp recovery examples,
+which limits what behavioral cloning can learn about those states.
+
 ## How does language affect the actions?
 
 Language provides context to the action-generating network. With the same image
