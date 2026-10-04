@@ -28,6 +28,7 @@ def main():
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for this smoke test")
+    torch.manual_seed(42)
     ds = LeRobotDataset("local/vlarobot_pick_place_train", root=args.dataset, video_backend="pyav")
     sample = ds[0]
     cfg = SmolVLAConfig.from_pretrained(args.checkpoint)

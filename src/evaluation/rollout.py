@@ -10,7 +10,7 @@ from src.video import VideoRecorder
 def rollout(sim, policy, task, seed, condition="position", max_steps=None, video_path=None, episode=0):
     c = config()
     obs, info = sim.reset(seed, task, condition=condition)
-    policy.reset()
+    policy.reset(seed=seed)
     trace, actions, latencies = [], [], []
     start = time.monotonic()
     video = VideoRecorder(video_path, c["control_hz"]) if video_path else None
@@ -31,6 +31,7 @@ def rollout(sim, policy, task, seed, condition="position", max_steps=None, video
             if info["terminated"] or info["truncated"]:
                 break
         trace.append(sim.call("privileged"))
+        sim.call("status", text="SUCCESS" if info["success"] else "FAILURE / TIMEOUT")
         if video:
             for _ in range(10):
                 video.add(
@@ -45,6 +46,7 @@ def rollout(sim, policy, task, seed, condition="position", max_steps=None, video
         "condition": condition,
         "episode": episode,
         "seed": seed,
+        "policy_seed": seed,
         **task.to_dict(),
         "success": bool(info["success"]),
         "episode_length": info["step"],

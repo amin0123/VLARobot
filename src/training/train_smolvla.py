@@ -137,7 +137,7 @@ def main():
                         log.write(line)
                         log.flush()
                         tail = (tail + [line])[-100:]
-                        match = re.search(r"\bloss:([\d.eE+\-]+)", line)
+                        match = re.search(r"\bloss:\s*([\d.eE+\-]+)", line)
                         if match:
                             losses.append(
                                 {"wall_seconds": time.monotonic() - start, "loss": float(match.group(1))}

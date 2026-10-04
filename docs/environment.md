@@ -28,7 +28,7 @@ Inspected 2026-10-04, before installation.
 | CUDA wheel runtime | 12.8; a real GPU matrix multiplication passed |
 | LeRobot | 0.6.1, tag commit `7e241bd630a3719a56157a497ce5d08f244784f1` |
 | Transformers / NumPy | 5.5.4 / 2.2.6 |
-| TorchCodec / PyAV | 0.11.0 / 15.1.0 |
+| TorchCodec / PyAV | 0.11.0+cpu / 15.1.0 |
 | FFmpeg | 7.1.1, conda-forge |
 | Existing Isaac Sim | `6.0.0-rc.59+release.41464.5f2772bc.gl`, `/home/amin24/isaacsim` |
 | Isaac bundled Python | 3.12.13, `/home/amin24/isaacsim/python.sh` |

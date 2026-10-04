@@ -51,7 +51,11 @@ class VLAPolicy:
         self.device, self.last_latency_s = device, 0.0
         self.calls = 0
 
-    def reset(self):
+    def reset(self, seed=None):
+        if seed is not None:
+            # SmolVLA samples Gaussian flow noise. Pair this seed across evaluation
+            # conditions as well as pairing the simulator's scene seed.
+            torch.manual_seed(int(seed))
         self.model.reset()
         self.pre.reset()
         self.post.reset()

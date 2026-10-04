@@ -66,6 +66,10 @@ def main():
                     result = env.privileged()
                 elif cmd == "expert_action":
                     result = env.expert_action()
+                elif cmd == "status":
+                    env._update_ui(msg["text"])
+                    env.world.render()
+                    result = None
                 else:
                     raise ValueError(f"Unknown worker command {cmd}")
                 conn.send({"ok": True, "result": result})

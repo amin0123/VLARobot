@@ -31,7 +31,8 @@ The parser does not generate motions or replace the text presented to the model.
 
 Each condition gets distinct episodes within it. Position, language, composition,
 lighting, camera, and scale use the same evaluation seed sequence so perturbation
-comparisons have paired layouts. `train_replay` intentionally uses training
+comparisons have paired layouts. SmolVLA's flow-noise generator is also seeded
+per episode; `policy_seed` is recorded alongside the scene seed. `train_replay` intentionally uses training
 episodes and is labeled separately. It measures memorization, not generalization.
 
 The success criterion checks all eight cube corners against the target container's
@@ -48,8 +49,10 @@ Results are written after every episode:
 - `traces/`: evaluator telemetry, predicted actions, and inference latency.
 - `outputs/videos/<evaluation-name>/`: actual recorded RGB episodes.
 
-The default records the first two episodes of each condition. Increase `--videos`
-to record more, or replay an interesting seed interactively. Reports count every
+The default retains the first two episodes of each condition plus the first
+success and first failure, if those occur later. Extra candidate recordings are
+removed after their result is known. Increase `--videos` to retain more, or
+replay an interesting seed interactively. Reports count every
 completed policy attempt, including failures. Interrupted runs retain completed
 rows and should not be silently merged with a different checkpoint.
 

@@ -84,8 +84,56 @@ teleport is used during manipulation. Machine-readable results and two real
 expert videos are under `outputs/expert/`. The collector checks the result and
 an environment/controller fingerprint before writing demonstrations.
 
+## Native viewer and dependency correction
+
+The native GUI demo completed successfully in 76 control steps (7.6 simulated
+seconds), showing the current instruction and episode status. Log:
+`outputs/logs/gui-demo.log`; actual camera frame: `outputs/gui_scene.png`.
+
+Dataset collection exposed a TorchCodec packaging mismatch: the generic PyPI
+0.11.0 wheel requested `libnvrtc.so.13`, while our PyTorch wheel uses CUDA 12.8.
+The collector continued through the explicitly selected supported PyAV backend.
+The CUDA 12.8 TorchCodec wheel then exposed an optional missing NVIDIA NPP
+library. V1 uses CPU video decoding, so the final compatible choice is the
+official `torchcodec==0.11.0+cpu` wheel. Its import, the CUDA PyTorch computation,
+and `pip check` all pass. This avoids adding an unused GPU video-decoder stack;
+SmolVLA computation still uses CUDA. The environment checker now imports the
+codec, since metadata-only version checks missed the shared-library mismatch.
+
+## LeRobot demonstration dataset — passed
+
+Collected **50/50** successful episodes on seeds **1000–1049**, without a rejected
+trial, in **478.8 s**. The official v3.0 dataset contains **3,914 frames at 10 Hz**,
+31 distinct instructions, nine canonical color pairs, and 50 unique scene seeds.
+Episode duration is 7.0–9.1 s (mean 7.828 s). The state width is 14 and action
+width is seven. Inspection: `datasets/pick_place_50/meta/inspection.json`.
+
+Visual review of decoded dataset episodes **0, 17, and 33** confirmed approach,
+physical closure, lift, transport, release, and retreat. Their real MP4 replays
+and contact sheets are under `outputs/dataset_preview/`. Episode 33 also shows
+a small incidental displacement of a neighboring cube; the task metric does not
+penalize that. Expert success is not evidence of collision-free manipulation or
+preserving every distractor's position.
+
+The official split utility created **45 training episodes / 3,526 frames** and
+**5 validation episodes / 388 frames**, with disjoint seed sets. Training retains
+all nine canonical pairs. Validation normalization will come from the training
+checkpoint. `datasets/splits/manifest.json` records exact indices and seeds.
+
+## Pretrained CUDA forward pass — passed
+
+`python scripts/smoke_test_vla.py` loaded the official pretrained SmolVLA weights
+and consumed a real training-split observation. The output was finite with shape
+**[1, 50, 7]**. Warm chunk inference took **78.9 ms** on the RTX 5070 Ti; PyTorch
+peak allocated memory was **1,188.9 MiB**. The model has 450,046,176 parameters,
+with 99,880,992 trainable under the selected frozen-backbone configuration.
+Full input shapes and measurements: `outputs/smoke_test_vla.json`.
+
+These are single-example smoke-test measurements after warm-up, not an end-to-end
+control benchmark or a demonstration of task competence. Base outputs were not
+executed as evidence of success.
+
 ## Outstanding runtime gates
 
-Real dataset collection and visual review, pretrained CUDA forward pass,
-training, and VLA rollout evaluation are not yet recorded here. No task success
-rate is asserted for them.
+The 300-step sanity fine-tune, longer training run, and VLA rollout evaluation
+are not yet recorded here. No task success rate is asserted for them.

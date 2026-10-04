@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import torch
+import torchcodec
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -32,6 +33,7 @@ def main():
         "cuda_architectures": torch.cuda.get_arch_list(),
         "compute_capability": torch.cuda.get_device_capability(),
         "cuda_matmul_passed": True,
+        "torchcodec_import_passed": bool(torchcodec.__version__),
         "packages": {
             name: md.version(name)
             for name in ["torch", "torchvision", "torchcodec", "lerobot", "transformers", "numpy", "av"]

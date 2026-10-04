@@ -13,6 +13,9 @@ fi
 # The host may source ROS into PYTHONPATH. Conda restores it upon deactivation.
 conda env config vars set -n vlarobot PYTHONPATH=
 conda run --no-capture-output -n vlarobot python -m pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
+# CPU video decoding avoids optional NVIDIA NPP decoder dependencies. The VLA
+# itself uses the CUDA PyTorch build installed above.
+conda run --no-capture-output -n vlarobot python -m pip install torchcodec==0.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
 conda run --no-capture-output -n vlarobot python -m pip install -e '.[dev]'
 conda run --no-capture-output -n vlarobot python -m pip check
 conda run --no-capture-output -n vlarobot python scripts/check_environment.py

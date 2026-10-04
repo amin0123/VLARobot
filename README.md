@@ -7,9 +7,10 @@ and honest generalization evaluation.
 
 **Current validation status:** the existing Isaac Sim scene and synchronized RGB
 capture pass runtime checks; the scripted expert achieved **100/100** randomized
-successes. Eight software/API tests pass. Dataset and learned-policy milestones
-are being validated next. See [the experiment log](docs/experiments.md) for measured
-results; expert success is separate from VLA success.
+successes. The real dataset contains **50 demonstrations / 3,914 frames**, with
+45/5 train/validation episodes. Three replays have been visually reviewed.
+Learned-policy milestones are being validated next. See
+[the experiment log](docs/experiments.md); expert success is separate from VLA success.
 
 ```mermaid
 flowchart LR
