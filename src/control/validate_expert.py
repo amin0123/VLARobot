@@ -28,7 +28,7 @@ def main():
             seed = args.seed_start + episode
             task = sample_task(episode, seed)
             render = episode < args.videos or args.gui
-            obs, info = sim.reset(seed, task, render=render)
+            obs, info = sim.reset(seed, task, render=render, episode=episode)
             trace, actions = [], []
             video = (
                 VideoRecorder(args.output / f"episode_{episode:04d}.mp4", c["control_hz"])

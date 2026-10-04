@@ -55,6 +55,11 @@ Try the dataset contact sheet: watch how the image changes during descent, closu
 lift, and release. Note where the gripper occludes the cube. Those are exactly the
 visual conditions the learner must handle.
 
+![Actual successful expert demonstration, episode 0](media/expert_demo_0000.jpg)
+
+These are decoded frames from a physical scripted demonstration in this project,
+not generated illustrations or evidence of learned-policy success.
+
 ## How is language represented?
 
 The instruction is tokenized into integer IDs. Learned embeddings turn those IDs

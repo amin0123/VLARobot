@@ -16,7 +16,7 @@ conda run --no-capture-output -n vlarobot python -m pip install torch==2.11.0 to
 # CPU video decoding avoids optional NVIDIA NPP decoder dependencies. The VLA
 # itself uses the CUDA PyTorch build installed above.
 conda run --no-capture-output -n vlarobot python -m pip install torchcodec==0.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
-conda run --no-capture-output -n vlarobot python -m pip install -e '.[dev]'
+conda run --no-capture-output -n vlarobot python -m pip install -r requirements.lock.txt
 conda run --no-capture-output -n vlarobot python -m pip check
 conda run --no-capture-output -n vlarobot python scripts/check_environment.py
 echo 'Activate with: conda activate vlarobot'

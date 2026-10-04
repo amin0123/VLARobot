@@ -59,6 +59,22 @@ and uses the same precision as our inference smoke test. No upstream library
 files or training-loop implementation are patched. `mixed_precision: false`
 disables the upstream autocast selection.
 
+The precision diagnostic in `configs/training_fp32.yaml` additionally sets
+`trainable_dtype: float32`. Its entrypoint wraps the official policy factory to
+convert trainable parameter storage before optimizer construction; frozen weights
+retain their dtype, and compute still uses BF16 autocast. AdamW then stores its
+moments in FP32. This is distinct from changing every operation to FP32. The
+earlier configurations omit the setting to preserve their original experiments.
+See the measured comparison in `experiments.md`; dtype choice alone is not a
+guarantee of manipulation competence.
+
+SmolVLA's nested Transformers constructor can also narrow saved FP32 expert
+weights back to BF16 at reload. `src/training/precision.py` restores those FP32
+tensors after the official load, in training and inference. This preserves their
+saved values and the precision used by residual operations. It does not downcast
+frozen weights that upstream already constructs in FP32. This compatibility step
+is covered by an exact-value checkpoint round-trip test.
+
 CUDA OOM triggers a bounded retry at half the batch size, ending at batch size 1.
 Retries use fresh child processes to release allocations and retain failed logs.
 They restart from the selected pretrained checkpoint; they do not claim optimizer
@@ -86,6 +102,31 @@ reference recipe. Record actual steps, batch size, data, duration, and results.
 Use the official trainer's saved `train_config.json` and `--resume=true` to resume
 optimizer state; selecting a model through this wrapper's `--checkpoint` begins
 a new fine-tune with a fresh optimizer. Keep these two operations distinct.
+
+The [current official guide](https://huggingface.co/docs/lerobot/smolvla), checked
+2026-10-04, illustrates a 20,000-step, batch-64 run and emphasizes repeated
+demonstrations for each introduced variation. Its 50-episode example repeats five
+positions ten times each. Our 50 episodes span nine color pairs and continuously
+randomized positions, so they give much less repetition per variation. Fifty is
+a controlled starting dataset, not a universal sufficiency threshold.
+
+## Separating imitation error from physical success
+
+An optional offline diagnostic compares the first predicted Cartesian action to
+the recorded expert target on sampled frames:
+
+```bash
+python -m src.evaluation.action_diagnostics \
+  --checkpoint outputs/train/longer/checkpoints/last/pretrained_model \
+  --root datasets/splits/train --output outputs/action_diagnostics_longer.json
+```
+
+It reports XYZ error in metres and gripper-command error. It also replaces the
+image with black pixels or the instruction with empty text, holding the flow
+noise seed fixed. A changed prediction establishes input sensitivity only. These
+counterfactual inputs are outside the training distribution; the experiment does
+not establish correct color recognition or language understanding. Simulator
+rollouts remain the primary task metric.
 
 ## Interpreting the numbers
 

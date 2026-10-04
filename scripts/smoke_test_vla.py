@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 import torch
 
 from src.common import IMAGE_KEY, write_json
+from src.training.precision import restore_checkpoint_precision
 
 
 def main():
@@ -25,6 +26,7 @@ def main():
     parser.add_argument("--checkpoint", default="checkpoints/smolvla_base")
     parser.add_argument("--dataset", default="datasets/splits/train")
     parser.add_argument("--image-size", type=int, default=256)
+    parser.add_argument("--output", default="outputs/smoke_test_vla.json")
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for this smoke test")
@@ -42,6 +44,7 @@ def main():
     # All VLM and action expert weights are loaded from SmolVLA's checkpoint.
     # load_vlm_weights=False only avoids redundantly downloading the VLM's weights.
     model = SmolVLAPolicy.from_pretrained(args.checkpoint, config=cfg).to("cuda").eval()
+    restored = restore_checkpoint_precision(model, args.checkpoint)
     pre, post = make_pre_post_processors(cfg, dataset_stats=ds.meta.stats)
     batch = pre(
         {
@@ -63,6 +66,8 @@ def main():
     assert torch.isfinite(chunk).all() and torch.isfinite(action).all()
     report = {
         "checkpoint": args.checkpoint,
+        "model_image_size": args.image_size,
+        "restored_precision_values": restored,
         "device": "cuda",
         "gpu": torch.cuda.get_device_name(),
         "input_shapes": {k: list(v.shape) for k, v in batch.items() if isinstance(v, torch.Tensor)},
@@ -75,7 +80,7 @@ def main():
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "note": "Base checkpoint smoke test; these actions are not evidence of Panda task competence.",
     }
-    write_json("outputs/smoke_test_vla.json", report)
+    write_json(args.output, report)
     print(json.dumps(report, indent=2))
 
 

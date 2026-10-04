@@ -9,7 +9,7 @@ from src.video import VideoRecorder
 
 def rollout(sim, policy, task, seed, condition="position", max_steps=None, video_path=None, episode=0):
     c = config()
-    obs, info = sim.reset(seed, task, condition=condition)
+    obs, info = sim.reset(seed, task, condition=condition, episode=episode)
     policy.reset(seed=seed)
     trace, actions, latencies = [], [], []
     start = time.monotonic()

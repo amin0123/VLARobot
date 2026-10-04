@@ -1,9 +1,18 @@
 # Closed-loop inference and evaluation
 
+New evaluation runs save `run_config.json` with a SHA-256 hash of the exact model
+weights, the environment configuration, action prefix, episode limits, and seed
+range. Per-episode records include settled initial object poses. Camera, lighting,
+and scale perturbations can be regenerated from the recorded condition/seed and
+configuration. Each condition must be listed once, so duplicate CLI entries
+cannot inflate the episode count by repeating the same trials.
+Training-scene replay reads the dataset location saved by that checkpoint's
+trainer. If the repository/dataset has moved, pass `--training-root` explicitly.
+
 ```bash
 python -m src.inference.run_policy \
   --instruction "Put the green cube in the red box." \
-  --checkpoint outputs/train/sanity/checkpoints/last/pretrained_model
+  --checkpoint outputs/train/fp32/checkpoints/last/pretrained_model
 ```
 
 This launches the native Isaac viewport and an episode-status panel. `--headless`

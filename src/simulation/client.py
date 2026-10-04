@@ -72,10 +72,12 @@ class SimulationClient:
         self.conn.send({"cmd": cmd, **kwargs})
         return self._receive()
 
-    def reset(self, seed, task, condition="train", render=True):
+    def reset(self, seed, task, condition="train", render=True, episode=0):
         if hasattr(task, "to_dict"):
             task = task.to_dict()
-        return self.call("reset", seed=int(seed), task=task, condition=condition, render=render)
+        return self.call(
+            "reset", seed=int(seed), task=task, condition=condition, render=render, episode=int(episode)
+        )
 
     def step(self, action, render=True):
         return self.call("step", action=action, render=render)

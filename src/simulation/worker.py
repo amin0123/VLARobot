@@ -51,6 +51,7 @@ def main():
 
         env = PickPlaceEnvironment(app, config(args.config), headless=not args.gui)
         conn.send({"ok": True, "result": {"ready": True, "asset_path": env.asset_path}})
+        episode = 0
         while app.is_running():
             msg = conn.recv()
             try:
@@ -59,6 +60,7 @@ def main():
                     conn.send({"ok": True, "result": None})
                     break
                 if cmd == "reset":
+                    episode = msg.pop("episode", 0)
                     result = env.reset(**msg)
                 elif cmd == "step":
                     result = env.step(**msg)
@@ -74,6 +76,8 @@ def main():
                     result = None
                 else:
                     raise ValueError(f"Unknown worker command {cmd}")
+                if env.ui_label is not None and cmd in ("reset", "step", "status"):
+                    env.ui_label.text = f"Episode {episode} | {env.ui_label.text}"
                 conn.send({"ok": True, "result": result})
             except Exception:
                 conn.send({"ok": False, "error": traceback.format_exc()})

@@ -9,7 +9,10 @@ and honest generalization evaluation.
 capture pass runtime checks; the scripted expert achieved **100/100** randomized
 successes. The real dataset contains **50 demonstrations / 3,914 frames**, with
 45/5 train/validation episodes. Three replays have been visually reviewed.
-Learned-policy milestones are being validated next. See
+Pretrained CUDA inference and 300-step/3,000-step fine-tuning runs passed. The
+current model completed **one of six development trials**; the successful trial
+used a previously unseen scene. Earlier baselines failed all pilot tasks. A
+20,000-step run and fresh-seed evaluation are next. See
 [the experiment log](docs/experiments.md); expert success is separate from VLA success.
 
 ```mermaid
@@ -145,6 +148,10 @@ After the sanity run and physical evaluation:
 ./scripts/train.sh --config training_longer
 ```
 
+`configs/training_image512.yaml` repeats the 3,000-step experiment with SmolVLA's
+standard 512-pixel internal image size. Camera recordings remain 256 pixels;
+upsampling changes the encoder's patch sampling without adding scene detail.
+
 See [training details](docs/training.md) for freezing, flow matching, normalization,
 OOM behavior, and the difference between starting another fine-tune and resuming
 optimizer state.
@@ -154,7 +161,7 @@ optimizer state.
 ```bash
 python -m src.inference.run_policy \
   --instruction "Put the green cube in the red box." \
-  --checkpoint outputs/train/sanity/checkpoints/last/pretrained_model
+  --checkpoint outputs/train/fp32/checkpoints/last/pretrained_model
 ```
 
 Use `--headless` for recording without a window, `--seed` for reproducible scenes,
@@ -163,12 +170,30 @@ actions, executes the first five, and then uses fresh observations. It does not
 blindly execute one fixed episode trajectory. Videos and action/telemetry traces
 are saved under `outputs/videos/`.
 
+To run the configuration of the first successful learned development trial:
+
+```bash
+python -m src.inference.run_policy --headless --seed 100000 \
+  --instruction "Pick up the red object and put it in the green container." \
+  --checkpoint outputs/train/fp32/checkpoints/last/pretrained_model
+```
+
+The recorded [successful VLA contact sheet](docs/media/vla_first_success.jpg)
+and [failed VLA contact sheet](docs/media/vla_3000step_failure.jpg) show actual
+simulator frames. One success does not establish a reliable policy.
+Seeds fix the scene layout and model sampling, but RTX rendering is not guaranteed
+pixel-identical across runs or GUI/headless modes. A GUI trial with the same seed
+failed; the result is retained in the experiment log.
+
 ## Evaluate and analyze failures
 
 ```bash
 ./scripts/evaluate.sh
 ./scripts/evaluate.sh --episodes 50 --conditions position language composition \
   --output outputs/evaluation_50
+python -m src.evaluation.analyze_failures --root outputs/evaluation
+python scripts/plot_results.py --training outputs/train/sanity outputs/train/longer \
+  --evaluation outputs/evaluation
 ```
 
 Default evaluation conditions are training-scene replay, unseen positions,
@@ -184,6 +209,22 @@ misplaced object, or timeout. Videos help distinguish ambiguous causes.
 See [inference/evaluation](docs/inference.md) and
 [actual experiment results](docs/experiments.md). Bad outcomes remain in reports.
 No learned success rate has been asserted before completing the corresponding run.
+
+Measured development baselines so far (three episodes per condition are a small
+debugging sample, with a 0%–56.1% Wilson interval for each zero-success result):
+
+| Model | Training-scene replay | Unseen development positions |
+|---|---:|---:|
+| SmolVLA, 300 steps, batch 8, image 256 | 0/3 | 0/3 |
+| SmolVLA, 3,000 steps, batch 32, image 256 | 0/3 | 0/3 |
+| SmolVLA, 3,000 steps, batch 32, image 512 | 0/3 | 0/3 |
+| SmolVLA, 3,000 steps, FP32 storage and corrected reload | 0/3 | 1/3 |
+
+The 1/3 position result has a 6.1%–79.2% Wilson interval. All pilots use the same
+scene/noise seeds; full test results are reported separately.
+
+The final test uses fresh scene seeds beginning at 300000. Development pilot
+seeds beginning at 100000 are retained for paired comparisons during debugging.
 
 ## Troubleshooting
 

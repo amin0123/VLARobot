@@ -1,4 +1,4 @@
-checkpoint: outputs/train/sanity/checkpoints/last/pretrained_model
+checkpoint: outputs/train/fp32/checkpoints/last/pretrained_model
 episodes_per_condition: 20
 seed_start: 300000
 conditions:

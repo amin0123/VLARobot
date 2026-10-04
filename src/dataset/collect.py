@@ -121,7 +121,7 @@ def main():
                     if seed in used_seeds:
                         continue
                     task = sample_task(completed, seed, cfg["split"])
-                    obs, info = sim.reset(seed, task)
+                    obs, info = sim.reset(seed, task, episode=completed)
                     for _ in range(env_cfg["max_steps"]):
                         action = sim.call("expert_action")
                         next_obs, info = sim.step(action)

@@ -122,6 +122,10 @@ def main():
         tail, losses = [], []
         env = os.environ.copy()
         env.update({"PYTHONUNBUFFERED": "1", "TOKENIZERS_PARALLELISM": "false", "OMP_NUM_THREADS": "4"})
+        trainable_dtype = cfg.get("trainable_dtype", "checkpoint")
+        if trainable_dtype not in ("checkpoint", "float32"):
+            raise ValueError("trainable_dtype must be checkpoint or float32")
+        env["VLAROBOT_TRAINABLE_DTYPE"] = trainable_dtype
         try:
             with (output / f"training_{attempt:02d}.log").open("w") as log:
                 process = subprocess.Popen(

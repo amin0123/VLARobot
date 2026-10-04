@@ -2,10 +2,11 @@
 
 import argparse
 import csv
+import hashlib
 import json
 from pathlib import Path
 
-from src.common import config, json_default, write_json
+from src.common import config, expert_fingerprint, json_default, write_json
 from src.evaluation.metrics import summarize
 from src.evaluation.rollout import rollout
 from src.inference.policy import VLAPolicy
@@ -50,6 +51,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="evaluation")
     parser.add_argument("--checkpoint")
+    parser.add_argument(
+        "--training-root", type=Path, help="Override checkpoint dataset location for train replay"
+    )
     parser.add_argument("--episodes", type=int)
     parser.add_argument("--conditions", nargs="+")
     parser.add_argument("--output", type=Path)
@@ -65,6 +69,13 @@ def main():
     if args.n_action_steps is not None:
         cfg["n_action_steps"] = args.n_action_steps
     checkpoint = args.checkpoint or cfg["checkpoint"]
+    training_config_path = Path(checkpoint, "train_config.json")
+    checkpoint_training_root = (
+        json.loads(training_config_path.read_text())["dataset"]["root"]
+        if training_config_path.is_file()
+        else config("training")["dataset_root"]
+    )
+    training_root = args.training_root or Path(checkpoint_training_root)
     output = args.output or Path(cfg["output_dir"])
     if (output / "results.csv").exists():
         raise FileExistsError(f"{output}/results.csv already exists. Select --output for a new experiment.")
@@ -72,18 +83,40 @@ def main():
     allowed = {"train_replay", "position", "language", "composition", "lighting", "camera", "scale"}
     if set(conditions) - allowed:
         raise ValueError(f"Unknown conditions: {set(conditions) - allowed}")
-    episodes = args.episodes or cfg["episodes_per_condition"]
+    if len(conditions) != len(set(conditions)):
+        raise ValueError("Each condition must appear once; repeated seeds are not independent trials.")
+    episodes = args.episodes if args.episodes is not None else cfg["episodes_per_condition"]
     videos = args.videos if args.videos is not None else cfg["videos_per_condition"]
-    if episodes < 1 or videos < 0:
-        raise ValueError("episodes must be positive and videos nonnegative")
+    max_steps = args.max_steps if args.max_steps is not None else cfg["max_steps"]
+    if episodes < 1 or videos < 0 or max_steps < 1:
+        raise ValueError("episodes/max-steps must be positive and videos nonnegative")
+    with Path(checkpoint, "model.safetensors").open("rb") as weights:
+        checkpoint_sha256 = hashlib.file_digest(weights, "sha256").hexdigest()
+    write_json(
+        output / "run_config.json",
+        {
+            "checkpoint": str(checkpoint),
+            "checkpoint_sha256": checkpoint_sha256,
+            "training_root": str(training_root),
+            "conditions": conditions,
+            "episodes_per_condition": episodes,
+            "seed_start": cfg["seed_start"],
+            "n_action_steps": cfg["n_action_steps"],
+            "max_steps": min(max_steps, config()["max_steps"]),
+            "videos_per_condition": videos,
+            "environment": config(),
+            "environment_controller_fingerprint": expert_fingerprint(),
+            "initial_configuration_note": (
+                "Results contain settled object poses. Camera/light/scale perturbations are reproduced "
+                "from each recorded seed and condition using the environment configuration here."
+            ),
+        },
+    )
     video_dir = Path(cfg["video_dir"]) / output.name
     train_rows = []
     if "train_replay" in conditions:
         train_rows = [
-            json.loads(line)
-            for line in Path(config("training")["dataset_root"], "meta/collection.jsonl")
-            .read_text()
-            .splitlines()
+            json.loads(line) for line in (training_root / "meta/collection.jsonl").read_text().splitlines()
         ]
         if episodes > len(train_rows):
             raise ValueError("Do not repeat training seeds to inflate the train_replay sample size.")
@@ -114,7 +147,7 @@ def main():
                     task,
                     seed,
                     condition,
-                    max_steps=args.max_steps or cfg["max_steps"],
+                    max_steps=max_steps,
                     video_path=video,
                     episode=episode,
                 )

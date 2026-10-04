@@ -6,6 +6,7 @@ import numpy as np
 import torch
 
 from src.common import IMAGE_KEY
+from src.training.precision import restore_checkpoint_precision
 
 
 def policy_observation(observation, instruction):
@@ -43,6 +44,7 @@ class VLAPolicy:
                 "Use a Panda fine-tuned checkpoint (state=14, action=7), not the original SO100 configuration."
             )
         self.model = SmolVLAPolicy.from_pretrained(checkpoint, config=cfg).to(device).eval()
+        self.restored_precision_values = restore_checkpoint_precision(self.model, checkpoint)
         self.pre, self.post = make_pre_post_processors(
             cfg,
             pretrained_path=str(checkpoint),

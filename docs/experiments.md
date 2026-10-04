@@ -195,6 +195,146 @@ GPU training allocation reported approximately 3.9 GiB inside the trainer;
 `nvidia-smi` observed about 5.4 GiB including runtime/desktop usage. The OOM retry
 path was implemented but was not triggered by either completed run.
 
+## Longer-policy pilot: lower loss, still no completed task
+
+The 3,000-step model scored **0/3 train replay** and **0/3 unseen development
+positions**. Four episodes failed to approach the target, one approached but
+failed to grasp, and one lifted a wrong object. The gripper's first approach
+in the reviewed training episode missed the red cube by several centimeters,
+then continued through placement-like motions without it. All failures remain
+in `outputs/evaluation_longer_pilot/`.
+
+![Actual 3,000-step VLA failure](media/vla_3000step_failure.jpg)
+
+This contact sheet comes from the recorded rollout. The red target remains on the
+table while the gripper repeats placement-like motions. The black annotation band
+is added to the review video; it is never part of the policy's camera input.
+
+The saved input/output processor schemas and normalization were checked: state
+14, action seven, one camera, and training-derived statistics match the dataset.
+The full checkpoint loaded without missing-weight warnings. These checks do not
+prove learning quality, but they rule out obvious schema and checkpoint problems.
+
+Next hypothesis: the 256-pixel internal image size underserves tiny cube features
+in the frozen vision encoder. The official SmolVLA configuration uses 512. The
+controlled `training_image512` experiment changes only internal model image size
+(and output directory) relative to the longer configuration: same data, base
+checkpoint, batch 32, 3,000 steps, learning rate, split, and seed. Recorded images
+remain 256 pixels and are upsampled by the model; this cannot add real visual
+detail, but it changes patch sampling and may better match pretraining. More
+demonstrations, longer optimization, and unfreezing visual features are alternatives.
+The hypothesis will be tested, not assumed true. No perception/planning pipeline
+is substituted for the VLA.
+
+## Resolution experiment: measured training and offline diagnostics
+
+The 512-pixel experiment completed 3,000 steps/batch 32 in **789.0 s**, without
+an OOM retry. Logged loss decreased from **1.568 to 0.026**; held-out loss was
+**0.0461**, compared with 0.0455 for image 256. On 32 evenly spaced training
+observations, immediate XYZ error averaged **2.22 cm** (512) versus **2.18 cm**
+(256). These measurements do not show an accuracy improvement from resolution
+alone. Artifacts: `outputs/train/image512/` and `outputs/action_diagnostics_*.json`.
+
+Blanking the image changed predicted XYZ by 6.68 cm on average for the 512 model;
+removing language changed it by 7.46 cm, holding flow-noise seeds fixed. Thus
+predictions depend on these inputs. This out-of-distribution sensitivity test
+does not establish correct visual localization or language grounding.
+
+The paired simulator pilot finished **0/3 train replay and 0/3 unseen development
+positions**. All six failed to approach the target. Increasing internal resolution
+alone did not solve the observed failure in this sample. The unmodified pilot
+results, videos, and traces are under `outputs/evaluation_image512_pilot/`.
+
+## Next controlled diagnostic: optimization precision
+
+Inspection of saved weights shows that much of the trainable action expert stays
+in BF16 storage, alongside FP32 projections. BF16 has a wide exponent range but
+only seven explicit fraction bits; small optimizer updates can round away when
+stored directly in BF16. This is a numerical concern, not an established cause
+of the grasp failures. Sampled layers still changed between checkpoints.
+
+Before merely increasing training duration, compare a 3,000-step image-256 run
+with **FP32 storage for trainable parameters and optimizer states**, while retaining
+BF16 autocast for computation. Keep all data, initialization, freezing, and other
+hyperparameters equal to `training_longer`. A small factory wrapper in the
+entrypoint performs this conversion before the official trainer creates its
+optimizer. The official training loop is retained; no installed package is edited.
+Alternatives are a longer run, more demonstrations, or unfreezing the backbone.
+
+This follows the distinction between model storage and operation precision in
+[PyTorch AMP](https://docs.pytorch.org/docs/2.11/amp.html). It does not alter the
+VLA architecture or introduce privileged policy inputs.
+
+The run completed 3,000 steps/batch 32 in **423.3 s**, without OOM. Logged loss
+decreased from **1.126 to 0.015**. The first pilot still scored **0/6**, with three
+failed grasps and three approach failures. That pilot used the original
+checkpoint loader and is retained under `outputs/evaluation_fp32_pilot/`.
+
+### Checkpoint precision mismatch — confirmed and corrected
+
+Direct inspection showed `F32` storage in the saved action-expert query weights,
+but `torch.bfloat16` after `SmolVLAPolicy.from_pretrained`. The nested Transformers
+configuration determines constructor dtypes, and the weight loader copies into
+those tensors. Consequently, the FP32-training experiment was evaluated with
+narrowed weights and different residual arithmetic.
+
+The selected correction retains the official loader and then re-reads only saved
+FP32 parameters that were narrowed to FP16/BF16. It preserves Parameter objects,
+exact saved values, and the constructor's already-higher precision choices. For
+example, the original base stores some frozen BF16 weights that upstream loads
+in FP32; that existing behavior is preserved. The same helper supports continued
+training from an FP32 checkpoint. Regression tests reproduce the narrowing and
+verify exact restoration. No installed LeRobot or Transformers source is edited.
+
+The corrected pilot is stored separately as `outputs/evaluation_fp32_restored_pilot/`.
+
+### First learned physical success
+
+The corrected pilot finished **0/3 training-scene replay** and **1/3 unseen
+development positions**. The position estimate is 33.3%, with a very wide Wilson
+95% interval of **6.1%–79.2%**. Five failures remained: three failed grasps, one
+approach failure, and one wrong-object selection. In the training-scene failures,
+nearest TCP distances were 3.97–5.47 cm; the coarse `failed_grasp` label does not
+mean precise grasp alignment was achieved.
+
+For seed **100000**, instruction **“Pick up the red object and put it in the green
+container.”**, SmolVLA completed the task in **70 steps / 7.0 simulated seconds**.
+Manual review of the actual video confirms red-cube closure, lift, transport,
+release into the green box, and retreat. The containment/stability metric passed.
+No expert action was used in this rollout. Video:
+`outputs/videos/evaluation_fp32_restored_pilot/position_0000.mp4`.
+
+![Actual first successful SmolVLA rollout](media/vla_first_success.jpg)
+
+Restored-checkpoint held-out flow loss was **0.0511**, and immediate training-frame
+XYZ error averaged **1.96 cm**. The small pilot does not establish a statistically
+reliable improvement from the precision correction; it does establish that the
+complete learned control path can perform a physical pick-and-place.
+
+The native GUI inference application was also executed on seed 100000 with the
+same checkpoint and instruction. Its task **failed to grasp within 240 steps**;
+the real recording is `outputs/videos/gui_fp32_trial.mp4`. The viewer and complete
+inference path ran, but this was not a successful GUI demonstration. Scene/model
+seeds do not guarantee identical RTX pixels across GUI/headless modes. This
+fragility is a limitation to investigate, not a reason to omit the failed trial.
+The final quantitative suite uses a consistent headless configuration.
+
+## Full training budget
+
+`configs/training_full.yaml` selects **20,000 steps**, batch 32, image 256, FP32
+trainable storage with BF16 computation, and the same 45-episode training split.
+It starts again from the official base checkpoint with a fresh optimizer, uses
+1,000 warm-up steps, and saves every 5,000 steps. The sample budget is 640,000
+frames (181.51 dataset passes). This tests increased optimization budget; it does
+not add demonstrations or claim to fix the dataset's coverage limitations.
+
+Final evaluation will use fresh seeds beginning at 300000. Development pilots
+and the known-success demonstration are excluded from the unseen-test estimate.
+
 ## Outstanding runtime gates
 
-Longer-policy development rollouts and final generalization evaluation are pending.
+The 20,000-step run and final generalization evaluation are pending.
+
+`setup.sh` was re-run successfully after switching to the tested package lock.
+It reused the existing simulator, passed dependency/CUDA checks, and did not
+install Isaac Sim or ROS. All ten unit/API/regression tests pass.
