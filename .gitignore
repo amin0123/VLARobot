@@ -15,3 +15,9 @@ vendor/
 !checkpoints/.gitkeep
 core
 core.*
+
+# Local publication drafts and recordings
+/brag-output/
+/docs/youtube_*.md
+/docs/results/youtube_*.json
+/scripts/*_youtube.py
